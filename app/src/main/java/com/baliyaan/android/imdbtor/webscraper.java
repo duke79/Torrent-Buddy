@@ -37,13 +37,27 @@ public class webscraper {
     }
 
     public static void main(String[] args) {
+        //OpenMagnetInBrowser("magnet:?xt=urn:btih:20130aa512be804b52c6d751dfa7070e308037ce&dn=The.Martian.2015.HDRip.XviD-ETRG&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Fzer0day.ch%3A1337&tr=udp%3A%2F%2Fopen.demonii.com%3A1337&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Fexodus.desync.com%3A6969");
+
         ArrayList<String> magnetLinksToTorrents = GetTorrents("The Martian");
         System.out.println("Number of elements: " + magnetLinksToTorrents.size());
         if (magnetLinksToTorrents.size() > 0) {
             for (String link:magnetLinksToTorrents
                  ) {
                 System.out.println("webscraper.main: " + link);
+                OpenMagnetInBrowser(link);
             }
+        }
+    }
+
+    // TODO: Works only for windows. May need something else for Android.
+    // See: http://stackoverflow.com/questions/5226212/how-to-open-the-default-webbrowser-using-java
+    private static void OpenMagnetInBrowser(String uri) {
+        Runtime rt = Runtime.getRuntime();
+        try {
+            rt.exec("rundll32 url.dll,FileProtocolHandler "+uri);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
