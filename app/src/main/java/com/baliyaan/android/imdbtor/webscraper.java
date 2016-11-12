@@ -37,15 +37,19 @@ public class webscraper {
     }
 
     public static void main(String[] args) {
-
-        ArrayList<String> torrents = GetTorrents("The Martian");
-        System.out.println("Number of elements: " + torrents.size());
-        if (torrents.size() > 0) {
-            System.out.println("webscraper.main: " + torrents.get(0));
+        ArrayList<String> magnetLinksToTorrents = GetTorrents("The Martian");
+        System.out.println("Number of elements: " + magnetLinksToTorrents.size());
+        if (magnetLinksToTorrents.size() > 0) {
+            for (String link:magnetLinksToTorrents
+                 ) {
+                System.out.println("webscraper.main: " + link);
+            }
         }
     }
 
     private static ArrayList<String> GetTorrents(String q) {
+        q+=" hdrip";
+        ArrayList<String> torrentLinkList = new ArrayList<>();
         String query = null;
         try {
             query = URLEncoder.encode(q.toLowerCase(), "UTF-8").replace("+", "%20");
@@ -53,15 +57,23 @@ public class webscraper {
             e.printStackTrace();
         }
         String url = "https://thepiratebay.org/search/" + query + "/0/99/0";
-        String selector = "#searchResult > tbody > tr:nth-child(1) > td:nth-child(2) > a:nth-child(2)";
-        ArrayList<String> torrents = new ArrayList<>();
+
+
+        String selectorForMagnet = "#searchResult > tbody > tr:nth-child(1) > td:nth-child(2) > a:nth-child(2)";
+        Elements torrents;
         try {
             Document document = GetDocument(url);
-            torrents = Select(document, selector);
+            torrents = document.select(selectorForMagnet);
+            assert torrents != null;
+            for (int i = 0; i < torrents.size(); i++) {
+                Element element = torrents.get(i);
+                String magentLink = element.attr("href");
+                torrentLinkList.add(magentLink);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return torrents;
+        return torrentLinkList;
     }
 
     private static ArrayList<String> GetListOfMovies() {
