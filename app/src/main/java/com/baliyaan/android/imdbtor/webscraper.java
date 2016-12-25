@@ -1,5 +1,8 @@
 package com.baliyaan.android.imdbtor;
 
+import android.content.Context;
+import android.support.annotation.Nullable;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,7 +17,9 @@ import java.util.ArrayList;
  * Created by Pulkit Singh on 10/9/2016.
  */
 
-public class webscraper {
+public class WebScraper {
+    public static Context mContext;
+
     // "http://stackoverflow.com/questions/2971155"
     public static Document GetDocument(String iURL) throws IOException {
         Document document = Jsoup.connect(iURL)
@@ -44,8 +49,9 @@ public class webscraper {
         if (magnetLinksToTorrents.size() > 0) {
             for (String link:magnetLinksToTorrents
                  ) {
-                System.out.println("webscraper.main: " + link);
-                OpenMagnetInBrowser(link);
+                System.out.println("WebScraper.main: " + link);
+                //OpenMagnetInBrowser(link);
+                GetTorrentsFromAllProviders("the mart");
             }
         }
     }
@@ -78,6 +84,42 @@ public class webscraper {
         try {
             Document document = GetDocument(url);
             torrents = document.select(selectorForMagnet);
+            assert torrents != null;
+            for (int i = 0; i < torrents.size(); i++) {
+                Element element = torrents.get(i);
+                String magentLink = element.attr("href");
+                torrentLinkList.add(magentLink);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return torrentLinkList;
+    }
+
+    @Nullable
+    public static ArrayList<Torrent> GetTorrentsFromAllProviders(String q) {
+        ArrayList<Torrent> torrents = null;
+        ArrayList<Provider> providers = Provider.getProvidersList(mContext);
+
+        return torrents;
+    }
+
+
+    private static ArrayList<String> GetTorrentsFromAProvider(String q,String searchURL, String linkSelector) {
+        ArrayList<String> torrentLinkList = new ArrayList<>();
+        String query = null;
+        try {
+            query = URLEncoder.encode(q.toLowerCase(), "UTF-8").replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String url = searchURL.replace("%s",q);
+        //String url = "https://thepiratebay.org/search/" + query + "/0/99/0";
+
+        Elements torrents;
+        try {
+            Document document = GetDocument(url);
+            torrents = document.select(linkSelector);
             assert torrents != null;
             for (int i = 0; i < torrents.size(); i++) {
                 Element element = torrents.get(i);
