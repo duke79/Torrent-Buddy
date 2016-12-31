@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     public Context mContext;
 
@@ -18,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 WebScraper.mContext = mContext;
-                WebScraper.GetTorrentsFromAllProviders("the mart");
+                ArrayList<Torrent> torrents = TorrentProviderServices.GetTorrents(mContext,"the mart");
             }
         }).start();
     }
