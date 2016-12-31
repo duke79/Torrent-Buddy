@@ -32,18 +32,18 @@ public class TorrentProviderServices {
 
         TorrentProvider provider = null;
         try {
-            JSONObject jsonObject = new JSONObject(jsonStream);
-            JSONArray jsArray = jsonObject.getJSONArray("providers");
-            for (int i = 0; i < jsArray.length(); i++) {
+            JSONObject jsonFile = new JSONObject(jsonStream);
+            JSONArray jsonProvidersList = jsonFile.getJSONArray("providers");
+            for (int i = 0; i < jsonProvidersList.length(); i++) {
                 try {
                     provider = new TorrentProvider();
-                    JSONObject jsObject = jsArray.getJSONObject(i);
-                    provider.title = jsObject.optString("name");
-                    provider.searchURL = jsonObject.optString("searchUrl");
-                    provider.magnetsSelector = jsObject.optString("magnetsSelector");
-                    provider.titlesSelector = jsObject.optString("titlesSelector");
-                    provider.timestampsSelector = jsObject.optString("timestampsSelector");
-                    provider.sizesSelector = jsObject.optString("titlesSelector");
+                    JSONObject jsonProvider = jsonProvidersList.getJSONObject(i);
+                    provider.title = jsonProvider.optString("name");
+                    provider.searchURL = jsonProvider.optString("searchUrl");
+                    provider.magnetsSelector = jsonProvider.optString("magnetsSelector");
+                    provider.titlesSelector = jsonProvider.optString("titlesSelector");
+                    provider.timestampsSelector = jsonProvider.optString("timestampsSelector");
+                    provider.sizesSelector = jsonProvider.optString("titlesSelector");
                     providers.add(provider);
                 }
                 catch (JSONException e)

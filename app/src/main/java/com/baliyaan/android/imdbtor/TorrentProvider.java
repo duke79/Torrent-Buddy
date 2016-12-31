@@ -62,10 +62,12 @@ public class TorrentProvider {
 
             // Map all the fields
             for (int i = 0; i < magnetsList.size(); i++) {
-                torrentsList.get(i).magnetLink = magnetsList.get(i).attr("href");
-                torrentsList.get(i).title = titlesList.get(i).text();
-                //torrentsList.get(i).timeAdded = timestampsList.get(i).text();
-                //torrentsList.get(i).size = sizesList.get(i).text();
+                Torrent torrent = new Torrent();
+                torrent.magnetLink = magnetsList.get(i).attr("href");
+                torrent.title = titlesList.get(i).text();
+                //torrent.timeAdded = timestampsList.get(i).text();
+                //torrent.size = sizesList.get(i).text();
+                torrentsList.add(torrent);
             }
         } catch (IOException e) {
             e.printStackTrace();
