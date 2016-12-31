@@ -36,7 +36,7 @@ public class TorrentProvider {
 
         // Prepare Search URL
         //String url = "https://thepiratebay.org/search/" + query + "/0/99/0";
-        String url = searchURL.replace("%s",query);
+        String url = searchURL.replace("%s", query);
 
         // Fill torrents fields from the provider
         //String selectorForMagnet = "#searchResult > tbody > tr:nth-child(1) > td:nth-child(2) > a:nth-child(2)";
@@ -69,7 +69,7 @@ public class TorrentProvider {
                 //torrent.size = sizesList.get(i).text();
                 torrentsList.add(torrent);
             }
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
             e.printStackTrace();
         }
 

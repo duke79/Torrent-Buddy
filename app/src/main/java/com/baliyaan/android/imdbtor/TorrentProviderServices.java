@@ -61,7 +61,7 @@ public class TorrentProviderServices {
     }
 
     public static ArrayList<Torrent> GetTorrents(Context context,String q) {
-        ArrayList<Torrent> torrents = null;
+        ArrayList<Torrent> torrents = new ArrayList<>();
 
         ArrayList<TorrentProvider> providers = GetProvidersList(context);
         for(int i=0;i<providers.size();i++)
