@@ -20,6 +20,8 @@ public class TorrentProvider {
     public String titlesSelector;
     public String timestampsSelector;
     public String sizesSelector;
+    public String seedsSelector;
+    public String leechesSelector;
 
     public ArrayList<Torrent> GetTorrents(String q) {
 
@@ -59,6 +61,12 @@ public class TorrentProvider {
             // Retrieve sizes
             Elements sizesList;
             sizesList = document.select(sizesSelector);
+            // Retrieve seeds
+            Elements seedsList;
+            seedsList = document.select(seedsSelector);
+            // Retrieve leeches
+            Elements leechesList;
+            leechesList = document.select(leechesSelector);
 
             // Map all the fields
             for (int i = 0; i < magnetsList.size(); i++) {
@@ -67,6 +75,8 @@ public class TorrentProvider {
                 torrent.title = titlesList.get(i).text();
                 //torrent.timeAdded = timestampsList.get(i).text();
                 //torrent.size = sizesList.get(i).text();
+                torrent.seeds = seedsList.get(i).text();
+                torrent.leeches = leechesList.get(i).text();
                 torrentsList.add(torrent);
             }
         } catch (IOException | RuntimeException e) {
