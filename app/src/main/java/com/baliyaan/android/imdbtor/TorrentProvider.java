@@ -22,6 +22,7 @@ public class TorrentProvider {
     public String sizesSelector;
     public String seedsSelector;
     public String leechesSelector;
+    public String URLsSelector;
 
     public ArrayList<Torrent> GetTorrents(String q) {
 
@@ -67,6 +68,9 @@ public class TorrentProvider {
             // Retrieve leeches
             Elements leechesList;
             leechesList = document.select(leechesSelector);
+            // Retrieve URLs
+            Elements URLsList;
+            URLsList = document.select(URLsSelector);
 
             // Map all the fields
             for (int i = 0; i < magnetsList.size(); i++) {
@@ -77,6 +81,7 @@ public class TorrentProvider {
                 //torrent.size = sizesList.get(i).text();
                 torrent.seeds = seedsList.get(i).text();
                 torrent.leeches = leechesList.get(i).text();
+                torrent.url = URLsList.get(i).attr("abs:href");
                 torrentsList.add(torrent);
             }
         } catch (IOException | RuntimeException e) {

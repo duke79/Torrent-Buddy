@@ -46,6 +46,7 @@ public class TorrentProviderServices {
                     provider.sizesSelector = jsonProvider.optString("titlesSelector");
                     provider.seedsSelector = jsonProvider.optString("seedsSelector");
                     provider.leechesSelector = jsonProvider.optString("leechesSelector");
+                    provider.URLsSelector = jsonProvider.optString("URLsSelector");
                     providers.add(provider);
                 }
                 catch (JSONException e)
