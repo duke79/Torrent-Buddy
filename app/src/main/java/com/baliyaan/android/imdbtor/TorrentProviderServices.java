@@ -40,13 +40,15 @@ public class TorrentProviderServices {
                     JSONObject jsonProvider = jsonProvidersList.getJSONObject(i);
                     provider.title = jsonProvider.optString("name");
                     provider.searchURL = jsonProvider.optString("searchUrl");
-                    provider.magnetsSelector = jsonProvider.optString("magnetsSelector");
-                    provider.titlesSelector = jsonProvider.optString("titlesSelector");
-                    provider.timestampsSelector = jsonProvider.optString("timestampsSelector");
-                    provider.sizesSelector = jsonProvider.optString("titlesSelector");
-                    provider.seedsSelector = jsonProvider.optString("seedsSelector");
-                    provider.leechesSelector = jsonProvider.optString("leechesSelector");
-                    provider.URLsSelector = jsonProvider.optString("URLsSelector");
+
+                    JSONObject jsonSelectors = jsonProvider.getJSONObject("cssSelectors");
+                    provider.magnetsSelector = jsonSelectors.optString("magnets");
+                    provider.titlesSelector = jsonSelectors.optString("titles");
+                    provider.timestampsSelector = jsonSelectors.optString("timestamps");
+                    provider.sizesSelector = jsonSelectors.optString("titles");
+                    provider.seedsSelector = jsonSelectors.optString("seeds");
+                    provider.leechesSelector = jsonSelectors.optString("leeches");
+                    provider.URLsSelector = jsonSelectors.optString("URLs");
                     providers.add(provider);
                 }
                 catch (JSONException e)
