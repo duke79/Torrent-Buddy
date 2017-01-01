@@ -9,4 +9,6 @@
     <dimen name="icon_top_margin">5dp</dimen>
     <dimen name="icon_left_margin">36dp</dimen>
     <dimen name="result_subtext_top_magin">10dp</dimen>
+    <dimen name="search_results_top_margin">10dp</dimen>
+    <dimen name="row_spacing">30dp</dimen>
 </resources>
