@@ -3,6 +3,7 @@ package com.baliyaan.android.imdbtor;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.SearchView;
 
 import java.util.ArrayList;
@@ -11,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
     public Context mContext;
     ArrayList<Torrent> mTorrents = null;
     SearchView mSearchView = null;
+    ListViewCompat mListView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         mSearchView = (SearchView) findViewById(R.id.SearchBox);
         setupSearchView();
 
+        mListView = (ListViewCompat) findViewById(R.id.Results);
     }
 
     private void setupSearchView() {
