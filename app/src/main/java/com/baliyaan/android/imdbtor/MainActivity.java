@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Torrent torrent = (Torrent) mResultListAdapter.getItem(position);
-                Toast.makeText(mContext,torrent.title,Toast.LENGTH_LONG);
+                Toast.makeText(mContext,torrent.title,Toast.LENGTH_LONG).show();
             }
         });
     }

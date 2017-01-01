@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -70,10 +71,32 @@ public class ResultListAdapter extends BaseAdapter{
             viewHolder.category = (TextView) resultView.findViewById(R.id.torrent_category);
             viewHolder.leeches = (TextView) resultView.findViewById(R.id.torrent_leeches);
             viewHolder.provider = (TextView) resultView.findViewById(R.id.torrent_provider);
+            viewHolder.provider.setId(position);
+            viewHolder.provider.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = v.getId();
+                    Toast.makeText(mContext,torrents.get(id).url,Toast.LENGTH_LONG).show();
+                }
+            });
             viewHolder.seeds = (TextView) resultView.findViewById(R.id.torrent_seeds);
             viewHolder.size = (TextView) resultView.findViewById(R.id.torrent_size);
             viewHolder.magnet = (ImageView) resultView.findViewById(R.id.icon_magnet);
+            viewHolder.magnet.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = v.getId();
+                    Toast.makeText(mContext,torrents.get(id).magnetLink,Toast.LENGTH_LONG).show();
+                }
+            });
             viewHolder.url = (ImageView) resultView.findViewById(R.id.icon_url_link);
+            viewHolder.url.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int id = v.getId();
+                    Toast.makeText(mContext,torrents.get(id).url,Toast.LENGTH_LONG).show();
+                }
+            });
             resultView.setTag(viewHolder);
         }
 
