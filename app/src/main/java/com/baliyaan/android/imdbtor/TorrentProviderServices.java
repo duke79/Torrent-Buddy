@@ -40,6 +40,7 @@ public class TorrentProviderServices {
                     JSONObject jsonProvider = jsonProvidersList.getJSONObject(i);
                     provider.title = jsonProvider.optString("name");
                     provider.searchURL = jsonProvider.optString("searchUrl");
+                    provider.icon = jsonProvider.optString("icon");
 
                     JSONObject jsonSelectors = jsonProvider.getJSONObject("cssSelectors");
                     provider.magnetsSelector = jsonSelectors.optString("magnets");

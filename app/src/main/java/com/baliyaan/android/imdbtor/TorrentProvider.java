@@ -23,6 +23,7 @@ public class TorrentProvider {
     public String seedsSelector;
     public String leechesSelector;
     public String URLsSelector;
+    public String icon;
 
     public ArrayList<Torrent> GetTorrents(String q) {
 
@@ -83,6 +84,7 @@ public class TorrentProvider {
                 torrent.leeches = leechesList.get(i).text();
                 torrent.url = URLsList.get(i).attr("abs:href");
                 torrent.provider = title;
+                torrent.icon = icon;
                 torrentsList.add(torrent);
             }
         } catch (IOException | RuntimeException e) {

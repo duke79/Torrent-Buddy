@@ -14,6 +14,7 @@ public class Torrent {
     public String leeches;
     public String category;
     public String provider;
+    public String icon;
     public String spokenLanguage;
     public String textedLanguage;
     public String author;

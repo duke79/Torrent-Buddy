@@ -2,6 +2,7 @@ package com.baliyaan.android.imdbtor;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -55,7 +60,7 @@ public class ResultListAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View resultView = convertView;
         if(resultView == null) {
             LayoutInflater layoutInflater = ((Activity)mContext).getLayoutInflater();
@@ -72,7 +77,7 @@ public class ResultListAdapter extends BaseAdapter{
             resultView.setTag(viewHolder);
         }
 
-        ResultsViewHolder viewHolder = (ResultsViewHolder) resultView.getTag();
+        final ResultsViewHolder viewHolder = (ResultsViewHolder) resultView.getTag();
         viewHolder.title.setText(torrents.get(position).title);
         viewHolder.category.setText(torrents.get(position).category);
         viewHolder.leeches.setText(torrents.get(position).leeches);
@@ -81,6 +86,36 @@ public class ResultListAdapter extends BaseAdapter{
         viewHolder.size.setText(String.valueOf((torrents.get(position).size)));
         viewHolder.magnet.setId(position);
         viewHolder.url.setId(position);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                loadImageFromURL(torrents.get(position).icon,viewHolder.url);
+            }
+        }).start();
         return resultView;
+    }
+
+    public boolean loadImageFromURL(String fileUrl,
+                                    ImageView iv){
+        try {
+
+            URL myFileUrl = new URL (fileUrl);
+            HttpURLConnection conn =
+                    (HttpURLConnection) myFileUrl.openConnection();
+            conn.setDoInput(true);
+            conn.connect();
+
+            InputStream is = conn.getInputStream();
+            iv.setImageBitmap(BitmapFactory.decodeStream(is));
+
+            return true;
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }
