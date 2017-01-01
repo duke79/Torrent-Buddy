@@ -4,19 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.baliyaan.android.imdbtor.MainActivity">
-
-    <android.support.v7.widget.SearchView
-        android:id="@+id/SearchBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
 
     <android.support.v7.widget.ListViewCompat
         android:id="@+id/Results"
@@ -27,5 +15,14 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/search_results_top_margin"
         android:divider="@android:color/transparent"
-        android:dividerHeight="@dimen/row_spacing"/>
+        android:dividerHeight="@dimen/row_spacing"
+        android:background="@android:color/darker_gray"/>
+
+    <android.support.v7.widget.SearchView
+        android:id="@+id/SearchBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>
