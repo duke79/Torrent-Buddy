@@ -13,6 +13,7 @@ public class Torrent {
     public String seeds;
     public String leeches;
     public String category;
+    public String provider;
     public String spokenLanguage;
     public String textedLanguage;
     public String author;

@@ -56,7 +56,7 @@
         android:layout_toEndOf="@+id/torrent_seeds"
         android:layout_marginLeft="@dimen/result_subtext_left_margin"/>
 
-    <ImageView
+    <ImageButton
         android:id="@+id/icon_magnet"
         android:layout_width="@dimen/icon_width"
         android:layout_height="@dimen/icon_height"
@@ -67,7 +67,7 @@
         android:layout_marginLeft="@dimen/icon_left_margin"
         android:layout_marginTop="@dimen/icon_top_margin"/>
 
-    <ImageView
+    <ImageButton
         android:id="@+id/icon_url_link"
         android:layout_width="@dimen/icon_width"
         android:layout_height="@dimen/icon_height"

@@ -82,6 +82,7 @@ public class TorrentProvider {
                 torrent.seeds = seedsList.get(i).text();
                 torrent.leeches = leechesList.get(i).text();
                 torrent.url = URLsList.get(i).attr("abs:href");
+                torrent.provider = title;
                 torrentsList.add(torrent);
             }
         } catch (IOException | RuntimeException e) {
