@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
                         mTorrents.clear();
                         mTorrents.addAll(TorrentProviderServices.GetTorrents(mContext, query));
                         int size = mTorrents.size();
-                        runOnUiThread(new Runnable() {
+                            runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 mResultListAdapter.notifyDataSetChanged();

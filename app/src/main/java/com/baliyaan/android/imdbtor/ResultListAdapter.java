@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -68,8 +67,8 @@ public class ResultListAdapter extends BaseAdapter{
             viewHolder.provider = (TextView) resultView.findViewById(R.id.torrent_provider);
             viewHolder.seeds = (TextView) resultView.findViewById(R.id.torrent_seeds);
             viewHolder.size = (TextView) resultView.findViewById(R.id.torrent_size);
-            viewHolder.magnet = (ImageButton) resultView.findViewById(R.id.icon_magnet);
-            viewHolder.url = (ImageButton) resultView.findViewById(R.id.icon_url_link);
+            viewHolder.magnet = (ImageView) resultView.findViewById(R.id.icon_magnet);
+            viewHolder.url = (ImageView) resultView.findViewById(R.id.icon_url_link);
             resultView.setTag(viewHolder);
         }
 
