@@ -93,7 +93,7 @@ public class ResultListAdapter extends BaseAdapter{
                         Toast.makeText(mContext,torrents.get(id).magnetLink,Toast.LENGTH_LONG).show();
                     }
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent. setData(Uri.parse(torrents.get(id).magnetLink));
+                    intent.setData(Uri.parse(torrents.get(id).magnetLink));
                     try {
                         mContext.startActivity(intent);
                     }
@@ -108,7 +108,19 @@ public class ResultListAdapter extends BaseAdapter{
                 @Override
                 public void onClick(View v) {
                     int id = v.getId();
-                    Toast.makeText(mContext,torrents.get(id).url,Toast.LENGTH_LONG).show();
+                    if(BuildConfig.DEBUG) {
+                        Toast.makeText(mContext, torrents.get(id).url, Toast.LENGTH_LONG).show();
+                    }
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(torrents.get(id).url));
+                    try {
+                        mContext.startActivity(intent);
+                    }
+                    catch (ActivityNotFoundException e)
+                    {
+                        Toast.makeText(mContext, R.string.BrowserAppNotFound,Toast.LENGTH_LONG).show();
+                    }
+
                 }
             });
             resultView.setTag(viewHolder);
