@@ -1,6 +1,7 @@
 package com.baliyaan.android.imdbtor;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ListViewCompat;
@@ -11,7 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener {
     public Context mContext;
     ArrayList<Torrent> mTorrents = new ArrayList<>();
     SearchView mSearchView = null;
@@ -26,6 +27,12 @@ public class MainActivity extends AppCompatActivity {
 
         setupSearchView();
         setupResultsList();
+        setupLoginFragment();
+    }
+
+    private void setupLoginFragment() {
+        LoginFragment loginFragment = new LoginFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.activity_main,loginFragment).commit();
     }
 
     private void setupResultsList() {
@@ -70,5 +77,10 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        // Required only for communication among fragments
     }
 }
