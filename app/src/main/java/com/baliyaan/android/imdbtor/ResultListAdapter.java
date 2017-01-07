@@ -1,8 +1,11 @@
 package com.baliyaan.android.imdbtor;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,7 +89,18 @@ public class ResultListAdapter extends BaseAdapter{
                 @Override
                 public void onClick(View v) {
                     int id = v.getId();
-                    Toast.makeText(mContext,torrents.get(id).magnetLink,Toast.LENGTH_LONG).show();
+                    if(BuildConfig.DEBUG) {
+                        Toast.makeText(mContext,torrents.get(id).magnetLink,Toast.LENGTH_LONG).show();
+                    }
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent. setData(Uri.parse(torrents.get(id).magnetLink));
+                    try {
+                        mContext.startActivity(intent);
+                    }
+                    catch (ActivityNotFoundException e)
+                    {
+                        Toast.makeText(mContext, R.string.TorrentAppNotFound,Toast.LENGTH_LONG).show();
+                    }
                 }
             });
             viewHolder.url = (ImageView) resultView.findViewById(R.id.icon_url_link);
