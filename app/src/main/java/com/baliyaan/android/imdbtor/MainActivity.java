@@ -3,21 +3,15 @@ package com.baliyaan.android.imdbtor;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.SearchView;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Toast;
 
-import java.util.ArrayList;
-
-public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener,SearchResultsFragment.OnFragmentInteractionListener {
     public Context mContext;
-    ArrayList<Torrent> mTorrents = new ArrayList<>();
     SearchView mSearchView = null;
-    ListViewCompat mResultsList = null;
-    ResultListAdapter mResultListAdapter = null;
+    SearchResultsFragment mSearchResultsFragment = null;
+    LoginFragment mLoginFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,26 +20,27 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         mContext = this;
 
         setupSearchView();
-        setupResultsList();
         setupLoginFragment();
     }
 
-    private void setupLoginFragment() {
-        LoginFragment loginFragment = new LoginFragment();
-        getSupportFragmentManager().beginTransaction().add(R.id.activity_main,loginFragment).commit();
+    private void setupSearchResultsFragment(String query) {
+        if(mSearchResultsFragment==null) {
+            mSearchResultsFragment = new SearchResultsFragment();
+        }
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(mLoginFragment!=null)
+            transaction.remove(mLoginFragment);
+        transaction.add(R.id.activity_main,mSearchResultsFragment).commit();
+        mSearchResultsFragment.Initiate(query);
     }
 
-    private void setupResultsList() {
-        mResultsList = (ListViewCompat) findViewById(R.id.Results);
-        mResultListAdapter = new ResultListAdapter(mContext,mTorrents);
-        mResultsList.setAdapter(mResultListAdapter);
-        mResultsList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Torrent torrent = (Torrent) mResultListAdapter.getItem(position);
-                Toast.makeText(mContext,torrent.title,Toast.LENGTH_LONG).show();
-            }
-        });
+    private void setupLoginFragment() {
+        if(mLoginFragment==null)
+            mLoginFragment = new LoginFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(mSearchResultsFragment!=null)
+            transaction.remove(mSearchResultsFragment);
+        transaction.add(R.id.activity_main,mLoginFragment).commit();
     }
 
     private void setupSearchView() {
@@ -54,21 +49,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
             @Override
             public boolean onQueryTextSubmit(final String query) {
                 assert mSearchView != null;
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTorrents.clear();
-                        mTorrents.addAll(TorrentProviderServices.GetTorrents(mContext, query));
-                        int size = mTorrents.size();
-                            runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mResultListAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                }).start();
-                return false;
+                setupSearchResultsFragment(query);
+                return true;
             }
 
             @Override
