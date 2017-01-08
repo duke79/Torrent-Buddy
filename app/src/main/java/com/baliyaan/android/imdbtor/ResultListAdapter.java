@@ -9,6 +9,8 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static java.lang.Boolean.TRUE;
+
 /**
  * Created by Pulkit Singh on 1/1/2017.
  */
@@ -27,6 +31,7 @@ import java.util.ArrayList;
 public class ResultListAdapter extends BaseAdapter{
     Context mContext = null;
     ArrayList<Torrent> torrents = null;
+    Boolean mAnimate = TRUE;
 
     static class ResultsViewHolder{
         public TextView title;
@@ -141,6 +146,11 @@ public class ResultListAdapter extends BaseAdapter{
                 loadImageFromURL(torrents.get(position).icon,viewHolder.url);
             }
         }).start();
+        if(mAnimate == true)
+        {
+            Animation animation = AnimationUtils.loadAnimation(mContext,android.R.anim.slide_in_left);
+            resultView.startAnimation(animation);
+        }
         return resultView;
     }
 
