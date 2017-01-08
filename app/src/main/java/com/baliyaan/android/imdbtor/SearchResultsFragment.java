@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ListViewCompat;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class SearchResultsFragment extends Fragment {
     ListViewCompat mResultsList = null;
     ResultListAdapter mResultListAdapter = null;
     ArrayList<Torrent> mTorrents = new ArrayList<>();
+    private SearchView mSearchView;
 
     public SearchResultsFragment() {
         // Required empty public constructor
@@ -72,6 +74,39 @@ public class SearchResultsFragment extends Fragment {
         }
     }
 
+    private void setupSearchView(View view) {
+        mSearchView = (SearchView) view.findViewById(R.id.SearchBox);
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(final String query) {
+                assert mSearchView != null;
+                mQuery = query;
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTorrents.clear();
+
+                        mTorrents.addAll(TorrentProviderServices.GetTorrents(getActivity(), mQuery));
+                        int size = mTorrents.size();
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mResultListAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+                }).start();
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // TODO Auto-generated method stub
+                return false;
+            }
+        });
+    }
+
     private void setupResultsList(View view) {
         mResultsList = (ListViewCompat) view.findViewById(R.id.Results);
         mResultListAdapter = new ResultListAdapter(getActivity(), mTorrents);
@@ -90,6 +125,7 @@ public class SearchResultsFragment extends Fragment {
                              Bundle savedInstanceState) {
         ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         View view = inflater.inflate(R.layout.fragment_search_results, container, false);
+        setupSearchView(view);
         setupResultsList(view);
         return view;
     }

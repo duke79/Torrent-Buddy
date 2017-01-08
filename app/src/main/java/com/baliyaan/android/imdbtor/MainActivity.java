@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         setContentView(R.layout.activity_main);
         mContext = this;
 
-        setupSearchView();
         setupLoginFragment();
     }
 
@@ -62,24 +61,6 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         if (mSearchResultsFragment != null)
             transaction.remove(mSearchResultsFragment);
         transaction.add(R.id.activity_main, mLoginFragment).commit();
-    }
-
-    private void setupSearchView() {
-        mSearchView = (SearchView) findViewById(R.id.SearchBox);
-        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(final String query) {
-                assert mSearchView != null;
-                setupSearchResultsFragment(query);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                // TODO Auto-generated method stub
-                return false;
-            }
-        });
     }
 
     @Override
