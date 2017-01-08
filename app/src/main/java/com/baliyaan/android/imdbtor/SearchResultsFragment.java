@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ListViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class SearchResultsFragment extends Fragment {
     ListViewCompat mResultsList = null;
     ResultListAdapter mResultListAdapter = null;
     ArrayList<Torrent> mTorrents = new ArrayList<>();
+
     public SearchResultsFragment() {
         // Required empty public constructor
     }
@@ -72,13 +74,13 @@ public class SearchResultsFragment extends Fragment {
 
     private void setupResultsList(View view) {
         mResultsList = (ListViewCompat) view.findViewById(R.id.Results);
-        mResultListAdapter = new ResultListAdapter(getActivity(),mTorrents);
+        mResultListAdapter = new ResultListAdapter(getActivity(), mTorrents);
         mResultsList.setAdapter(mResultListAdapter);
-        mResultsList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        mResultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Torrent torrent = (Torrent) mResultListAdapter.getItem(position);
-                Toast.makeText(getActivity(),torrent.title,Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), torrent.title, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -86,6 +88,7 @@ public class SearchResultsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         View view = inflater.inflate(R.layout.fragment_search_results, container, false);
         setupResultsList(view);
         return view;
