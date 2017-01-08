@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -128,9 +129,20 @@ public class SearchResultsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_results, container, false);
 
+        setupBackButton(view);
         setupSearchView(view);
         setupResultsList(view);
         return view;
+    }
+
+    private void setupBackButton(View view) {
+        ImageView backBtn = (ImageView) view.findViewById(R.id.back_icon);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
