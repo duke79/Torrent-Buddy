@@ -1,16 +1,24 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.baliyaan.android.imdbtor.SearchResultsFragment">
 
+    <android.support.v7.widget.SearchView
+        android:id="@+id/SearchBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
     <android.support.v7.widget.ListViewCompat
         android:id="@+id/Results"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/search_results_top_margin"
+        android:layout_below="@+id/SearchBox"
         android:divider="@android:color/transparent"
         android:dividerHeight="@dimen/row_spacing"
         android:background="@android:color/darker_gray"/>
 
-</FrameLayout>
+</RelativeLayout>
