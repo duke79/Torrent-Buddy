@@ -12,4 +12,9 @@
     <dimen name="search_results_top_margin">10dp</dimen>
     <dimen name="text_divider_height">15dp</dimen>
     <dimen name="row_spacing">3dp</dimen>
+    <dimen name="back_btn_width">20dp</dimen>
+    <dimen name="back_btn_height">20dp</dimen>
+    <dimen name="back_btn_margin_top">14dp</dimen>
+    <dimen name="back_btn_margin_left">8dp</dimen>
+    <dimen name="back_btn_margin_right">5dp</dimen>
 </resources>
