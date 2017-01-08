@@ -126,8 +126,8 @@ public class SearchResultsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         View view = inflater.inflate(R.layout.fragment_search_results, container, false);
+
         setupSearchView(view);
         setupResultsList(view);
         return view;
@@ -149,12 +149,14 @@ public class SearchResultsFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
     }
 
     public void Initiate(final String query) {

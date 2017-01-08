@@ -50,7 +50,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (mLoginFragment != null)
             transaction.remove(mLoginFragment);
-        transaction.add(R.id.activity_main, mSearchResultsFragment).commit();
+        transaction.add(R.id.activity_main, mSearchResultsFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
         mSearchResultsFragment.Initiate(query);
     }
 
