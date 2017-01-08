@@ -76,6 +76,9 @@ public class SearchResultsFragment extends Fragment {
 
     private void setupSearchView(View view) {
         mSearchView = (SearchView) view.findViewById(R.id.SearchBox);
+        mSearchView.setFocusable(true);
+        mSearchView.setIconified(false);
+        mSearchView.requestFocusFromTouch();
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
@@ -146,21 +149,6 @@ public class SearchResultsFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                mTorrents.clear();
-
-                mTorrents.addAll(TorrentProviderServices.GetTorrents(getActivity(), mQuery));
-                int size = mTorrents.size();
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mResultListAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
-        }).start();
     }
 
     @Override
