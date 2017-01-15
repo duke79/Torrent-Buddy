@@ -2,6 +2,7 @@ package com.baliyaan.android.imdbtor;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,10 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.ui.auth.AuthUI;
@@ -22,9 +25,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Arrays;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
-import static com.google.android.gms.internal.zzs.TAG;
 
 
 /**
@@ -50,6 +50,9 @@ public class LoginFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+
+    private static final String TAG = LoginFragment.class.getSimpleName();
+    CallbackManager mCallbackManager;
 
     @Override
     public void onStop() {
@@ -125,24 +128,33 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        FacebookSdk.sdkInitialize(getContext());
+
         View view = inflater.inflate(R.layout.fragment_login, container, false);
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        CallbackManager callbackManager = CallbackManager.Factory.create();
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        loginButton.setReadPermissions("email","public_profile");
+
+        if(isLoggedIn())
+        {
+            loginButton.setVisibility(View.GONE);
+            return view;
+        }
+
+        mCallbackManager = CallbackManager.Factory.create();
+        loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-
+                Log.d(TAG, "facebook:onSuccess:" + loginResult);
             }
 
             @Override
             public void onCancel() {
-
+                Log.d(TAG, "facebook:onCancel");
             }
 
             @Override
             public void onError(FacebookException error) {
-
+                Log.d(TAG, "facebook:onError", error);
             }
             //
         });
@@ -150,11 +162,27 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
+    private boolean isLoggedIn() {
+        Profile profile = Profile.getCurrentProfile();
+        if(profile != null)
+        {
+            Log.d(TAG,"Logged in User: "+profile.getFirstName()+" "+profile.getLastName());
+        }
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        return accessToken!=null;
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

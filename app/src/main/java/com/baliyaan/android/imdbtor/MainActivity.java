@@ -1,6 +1,7 @@
 package com.baliyaan.android.imdbtor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -9,9 +10,6 @@ import android.support.v7.widget.SearchView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
-import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, SearchResultsFragment.OnFragmentInteractionListener {
     public Context mContext;
@@ -59,10 +57,13 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         mSearchResultsFragment.Initiate(query);
     }
 
-    private void setupLoginFragment() {
-        FacebookSdk.sdkInitialize(getApplicationContext());
-        AppEventsLogger.activateApp(getApplicationContext());
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mLoginFragment.onActivityResult(requestCode,resultCode,data);
+    }
 
+    private void setupLoginFragment() {
         if (mLoginFragment == null)
             mLoginFragment = new LoginFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
