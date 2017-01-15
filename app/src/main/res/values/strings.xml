@@ -7,4 +7,5 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="auth_failed">Registration failed !</string>
     <string name="facebook_application_id" translatable="false">1831184750458491</string>
+    <string name="fb_login_protocol_scheme">fb1831184750458491</string>
 </resources>

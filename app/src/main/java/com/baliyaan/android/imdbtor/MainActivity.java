@@ -10,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
 public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, SearchResultsFragment.OnFragmentInteractionListener {
     public Context mContext;
     SearchView mSearchView = null;
@@ -57,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
     }
 
     private void setupLoginFragment() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        AppEventsLogger.activateApp(getApplicationContext());
+
         if (mLoginFragment == null)
             mLoginFragment = new LoginFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
