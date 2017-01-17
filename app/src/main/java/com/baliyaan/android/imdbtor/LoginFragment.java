@@ -18,9 +18,11 @@ import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookRequestError;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
 import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -66,7 +68,7 @@ public class LoginFragment extends Fragment {
     public void onStop() {
         super.onStop();
         if (mAuthListener != null) {
-            if(mAuth!=null)
+            if (mAuth != null)
                 mAuth.removeAuthStateListener(mAuthListener);
         }
     }
@@ -74,7 +76,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        if(mAuth!=null)
+        if (mAuth != null)
             mAuth.addAuthStateListener(mAuthListener);
     }
 
@@ -146,7 +148,7 @@ public class LoginFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
-        loginButton.setReadPermissions("email","public_profile","user_actions.video","user_friends");
+        loginButton.setReadPermissions("email", "public_profile", "user_actions.video", "user_friends");
 
         mCallbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -174,22 +176,37 @@ public class LoginFragment extends Fragment {
         return view;
     }
 
-    private void LoggedIn()
-    {
+    private void LoggedIn() {
         Profile profile = Profile.getCurrentProfile();
-        if(profile==null) return;
+        if (profile == null) return;
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if(accessToken==null) return;
+        if (accessToken == null) return;
         GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
-                Log.d(TAG,object.toString());
+                FacebookRequestError error = response.getError();
+                if (object == null) return;
+                Log.d(TAG, object.toString());
             }
         });
         Bundle parameters = new Bundle();
         parameters.putString("fields", "id,name,link");
         graphRequest.setParameters(parameters);
         graphRequest.executeAsync();
+
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/video.wants_to_watch",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        if (response == null) return;
+                        FacebookRequestError error = response.getError();
+                        Log.d(TAG,response.toString());
+                    }
+                }
+        ).executeAsync();
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -218,12 +235,11 @@ public class LoginFragment extends Fragment {
 
     private boolean isLoggedIn() {
         Profile profile = Profile.getCurrentProfile();
-        if(profile != null)
-        {
-            Log.d(TAG,"Logged in User: "+profile.getFirstName()+" "+profile.getLastName());
+        if (profile != null) {
+            Log.d(TAG, "Logged in User: " + profile.getFirstName() + " " + profile.getLastName());
         }
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        return accessToken!=null;
+        return accessToken != null;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -236,7 +252,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(mCallbackManager==null)return;
+        if (mCallbackManager == null) return;
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
