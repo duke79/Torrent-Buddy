@@ -106,7 +106,7 @@ public class LoginFragment extends Fragment {
 
         if(isLoggedIn())
         {
-            loginButton.setVisibility(View.GONE);
+            //loginButton.setVisibility(View.GONE);
             return view;
         }
 
@@ -152,6 +152,7 @@ public class LoginFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if(mCallbackManager==null)return;
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
