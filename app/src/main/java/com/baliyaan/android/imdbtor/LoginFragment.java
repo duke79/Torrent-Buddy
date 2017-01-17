@@ -19,6 +19,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -29,6 +31,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import org.json.JSONObject;
 
 
 /**
@@ -115,6 +119,7 @@ public class LoginFragment extends Fragment {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    LoggedIn();
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -141,7 +146,7 @@ public class LoginFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
-        loginButton.setReadPermissions("email","public_profile");
+        loginButton.setReadPermissions("email","public_profile","user_actions.video","user_friends");
 
         mCallbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
@@ -167,6 +172,24 @@ public class LoginFragment extends Fragment {
 
         // Inflate the layout for this fragment
         return view;
+    }
+
+    private void LoggedIn()
+    {
+        Profile profile = Profile.getCurrentProfile();
+        if(profile==null) return;
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if(accessToken==null) return;
+        GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                Log.d(TAG,object.toString());
+            }
+        });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id,name,link");
+        graphRequest.setParameters(parameters);
+        graphRequest.executeAsync();
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
