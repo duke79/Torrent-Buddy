@@ -104,12 +104,6 @@ public class LoginFragment extends Fragment {
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
         loginButton.setReadPermissions("email","public_profile");
 
-        if(isLoggedIn())
-        {
-            //loginButton.setVisibility(View.GONE);
-            return view;
-        }
-
         mCallbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
