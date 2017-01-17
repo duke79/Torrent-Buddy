@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -128,6 +129,16 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         FacebookSdk.sdkInitialize(getContext());
 
+        AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
+                                                       AccessToken currentAccessToken) {
+                if (currentAccessToken == null) {
+                    FirebaseAuth.getInstance().signOut();
+                }
+            }
+        };
+
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         LoginButton loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
         loginButton.setReadPermissions("email","public_profile");
@@ -149,8 +160,11 @@ public class LoginFragment extends Fragment {
             public void onError(FacebookException error) {
                 Log.d(TAG, "facebook:onError", error);
             }
+
             //
         });
+        accessTokenTracker.startTracking();
+
         // Inflate the layout for this fragment
         return view;
     }
