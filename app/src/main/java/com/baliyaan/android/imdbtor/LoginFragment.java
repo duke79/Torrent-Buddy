@@ -166,6 +166,7 @@ public class LoginFragment extends Fragment {
             @Override
             public void onError(FacebookException error) {
                 Log.d(TAG, "facebook:onError", error);
+                Toast.makeText(getContext(), R.string.FBLoginError,Toast.LENGTH_SHORT).show();
             }
 
             //
