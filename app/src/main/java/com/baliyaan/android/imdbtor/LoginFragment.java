@@ -144,9 +144,10 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // SDK must be initialized before inflating LoginButton
+        FacebookSdk.sdkInitialize(getContext());
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         StartTrackingFirebaseLogInOut();
-        FacebookSdk.sdkInitialize(getContext());
         InitializeFBLoginButton(view);
         return view;
     }
