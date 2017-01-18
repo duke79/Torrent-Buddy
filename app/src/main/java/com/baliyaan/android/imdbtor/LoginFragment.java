@@ -39,6 +39,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
@@ -177,8 +179,8 @@ public class LoginFragment extends Fragment {
         if (profile == null) return;
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken == null) return;
-        PullBasicUserInfo(accessToken);
-        PullWantsToWatchList();
+        RequestFBBasicUserInfo(accessToken);
+        RequestFBWantsToWatchList();
     }
 
     private void OnFirebaseLogOut() {
@@ -222,7 +224,7 @@ public class LoginFragment extends Fragment {
         Toast.makeText(getContext(), R.string.FBLoginError,Toast.LENGTH_SHORT).show();
     }
 
-    private void PullBasicUserInfo(AccessToken accessToken) {
+    private void RequestFBBasicUserInfo(AccessToken accessToken) {
         GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
@@ -237,7 +239,7 @@ public class LoginFragment extends Fragment {
         graphRequest.executeAsync();
     }
 
-    private void PullWantsToWatchList() {
+    private void RequestFBWantsToWatchList() {
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/me/video.wants_to_watch",
@@ -245,12 +247,29 @@ public class LoginFragment extends Fragment {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        if (response == null) return;
-                        FacebookRequestError error = response.getError();
-                        Log.d(TAG,response.toString());
+                        OnReturnedFBWantsToWatchList(response);
                     }
                 }
         ).executeAsync();
+    }
+
+    private void OnReturnedFBWantsToWatchList(GraphResponse response) {
+        if (response == null) return;
+        FacebookRequestError error = response.getError();
+        Log.d(TAG,response.toString());
+        JSONObject obj = response.getJSONObject();
+        try {
+            JSONArray videosList = (JSONArray) obj.get("data");
+            for(int i = 0; i< videosList.length(); i++)
+            {
+                JSONObject video = videosList.getJSONObject(i);
+                String title = (String) video.getJSONObject("data").getJSONObject("movie").get("title");
+                Log.d(TAG, title.toString());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JSONArray arr = response.getJSONArray();
     }
 
     private void IntegrateFirebaseFBwithFBtoken(AccessToken token) {
