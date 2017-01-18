@@ -3,10 +3,13 @@ package com.baliyaan.android.imdbtor;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +40,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONObject;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 
 /**
@@ -149,6 +155,7 @@ public class LoginFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
         StartTrackingFirebaseLogInOut();
         InitializeFBLoginButton(view);
+        IsFBLoggedIn();
         return view;
     }
 
@@ -268,13 +275,37 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    private boolean isLoggedIn() {
+    private boolean IsFBLoggedIn() {
         Profile profile = Profile.getCurrentProfile();
         if (profile != null) {
             Log.d(TAG, "Logged in User: " + profile.getFirstName() + " " + profile.getLastName());
         }
+        else
+        {
+            ShowHashKey(getContext());
+        }
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
+    }
+
+    public  void ShowHashKey(Context context) {
+        try {
+            PackageInfo info = context.getPackageManager().getPackageInfo("com.baliyaan.android.imdbtor",
+                    PackageManager.GET_SIGNATURES);
+            for (android.content.pm.Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+
+                String sign= Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                Log.e("KeyHash:", sign);
+                //  Toast.makeText(getApplicationContext(),sign,     Toast.LENGTH_LONG).show();
+            }
+            Log.d("KeyHash:", "****------------***");
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
