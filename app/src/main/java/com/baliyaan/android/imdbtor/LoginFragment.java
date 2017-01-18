@@ -33,6 +33,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONObject;
 
@@ -60,6 +62,7 @@ public class LoginFragment extends Fragment {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference mDatabase;
 
     private static final String TAG = LoginFragment.class.getSimpleName();
     CallbackManager mCallbackManager;
@@ -110,6 +113,10 @@ public class LoginFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        InitializeFirebase();
+    }
+
+    private void InitializeFirebase() {
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
@@ -121,67 +128,93 @@ public class LoginFragment extends Fragment {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                    LoggedIn();
+                    OnFirebaseLogIn();
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // ...
             }
         };
+
+        // Disk persistence for fire-base database (makes it work offline)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
+        StartTrackingFirebaseLogInOut();
         FacebookSdk.sdkInitialize(getContext());
+        InitializeFBLoginButton(view);
+        return view;
+    }
 
+    private void StartTrackingFirebaseLogInOut() {
         AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken,
                                                        AccessToken currentAccessToken) {
                 if (currentAccessToken == null) {
-                    FirebaseAuth.getInstance().signOut();
+                    OnFirebaseLogOut();
                 }
             }
         };
+        accessTokenTracker.startTracking();
+    }
 
-        View view = inflater.inflate(R.layout.fragment_login, container, false);
-        LoginButton loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
+    private void OnFirebaseLogIn() {
+        Profile profile = Profile.getCurrentProfile();
+        if (profile == null) return;
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken == null) return;
+        PullBasicUserInfo(accessToken);
+        PullWantsToWatchList();
+    }
+
+    private void OnFirebaseLogOut() {
+        FirebaseAuth.getInstance().signOut();
+    }
+
+    private void InitializeFBLoginButton(View view) {
+        final LoginButton loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
         loginButton.setReadPermissions("email", "public_profile", "user_actions.video", "user_friends");
 
         mCallbackManager = CallbackManager.Factory.create();
         loginButton.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
+                OnFBLoginSuccess(loginResult);
             }
 
             @Override
             public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
+                OnFBLoginCancel();
             }
 
             @Override
             public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-                Toast.makeText(getContext(), R.string.FBLoginError,Toast.LENGTH_SHORT).show();
+                OnFBLoginError(error);
             }
-
-            //
         });
-        accessTokenTracker.startTracking();
-
-        // Inflate the layout for this fragment
-        return view;
     }
 
-    private void LoggedIn() {
-        Profile profile = Profile.getCurrentProfile();
-        if (profile == null) return;
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken == null) return;
+    private void OnFBLoginSuccess(LoginResult loginResult) {
+        Log.d(TAG, "facebook:onSuccess:" + loginResult);
+        IntegrateFirebaseFBwithFBtoken(loginResult.getAccessToken());
+    }
+
+    private void OnFBLoginCancel() {
+        Log.d(TAG, "facebook:onCancel");
+    }
+
+    private void OnFBLoginError(FacebookException error) {
+        Log.d(TAG, "facebook:onError", error);
+        Toast.makeText(getContext(), R.string.FBLoginError,Toast.LENGTH_SHORT).show();
+    }
+
+    private void PullBasicUserInfo(AccessToken accessToken) {
         GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
@@ -194,7 +227,9 @@ public class LoginFragment extends Fragment {
         parameters.putString("fields", "id,name,link");
         graphRequest.setParameters(parameters);
         graphRequest.executeAsync();
+    }
 
+    private void PullWantsToWatchList() {
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/me/video.wants_to_watch",
@@ -210,28 +245,26 @@ public class LoginFragment extends Fragment {
         ).executeAsync();
     }
 
-    private void handleFacebookAccessToken(AccessToken token) {
-        Log.d(TAG, "handleFacebookAccessToken:" + token);
+    private void IntegrateFirebaseFBwithFBtoken(AccessToken token) {
+        Log.d(TAG, "IntegrateFirebaseFBwithFBtoken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener((Activity) getContext(), new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
-
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithCredential", task.getException());
-                            Toast.makeText(getContext(), "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        // ...
+                        OnFirebaseFBintegrationSuccess(task);
                     }
                 });
+    }
+
+    private void OnFirebaseFBintegrationSuccess(Task<AuthResult> task) {
+        Log.d(TAG, "signInWithCredential:onComplete:" + task.isSuccessful());
+        if (!task.isSuccessful()) {
+            Log.w(TAG, "signInWithCredential", task.getException());
+            Toast.makeText(getContext(), "Authentication failed.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private boolean isLoggedIn() {
