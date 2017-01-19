@@ -74,6 +74,7 @@ public class LoginFragment extends Fragment {
 
     private static final String TAG = LoginFragment.class.getSimpleName();
     CallbackManager mCallbackManager;
+    User mUser = new User();
 
     @Override
     public void onStop() {
@@ -120,7 +121,6 @@ public class LoginFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
         InitializeFirebase();
     }
 
@@ -228,15 +228,38 @@ public class LoginFragment extends Fragment {
         GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
-                FacebookRequestError error = response.getError();
-                if (object == null) return;
-                Log.d(TAG, object.toString());
+                OnReturnedFBBasicUserInfo(object,response);
             }
         });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id,name,link");
+        parameters.putString("fields", "id,cover,name,first_name,last_name,age_range,link,gender,locale,picture,timezone,updated_time,verified,email");//,user_friends");
         graphRequest.setParameters(parameters);
         graphRequest.executeAsync();
+    }
+
+    private void OnReturnedFBBasicUserInfo(JSONObject object, GraphResponse response) {
+        FacebookRequestError error = response.getError();
+        if (object == null) return;
+        try {
+            mUser.fb_id = (String) object.get("id");
+            mUser.fb_cover_url = (String) object.getJSONObject("cover").get("source");
+            mUser.fb_username = (String) object.get("name");
+            mUser.fb_f_name = (String) object.get("first_name");
+            mUser.fb_l_name = (String) object.get("last_name");
+            mUser.fb_age_range_min = (int) object.getJSONObject("age_range").get("min");
+            mUser.fb_link = (String) object.get("link");
+            mUser.fb_gender = (String) object.get("gender");
+            mUser.fb_locale = (String) object.get("locale");
+            mUser.fb_picture_url = (String) object.getJSONObject("picture").getJSONObject("data").get("url");
+            mUser.fb_timezone = (double) object.get("timezone");
+            mUser.fb_updated_time = (String) object.get("updated_time");
+            mUser.fb_verified = (boolean) object.get("verified");
+            //mUser.fb_email = (String) object.get("email");
+            //mUser.fb_appFriends = object.getJSONArray("user_friends");
+            Log.d(TAG, object.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     private void RequestFBWantsToWatchList() {
@@ -266,6 +289,7 @@ public class LoginFragment extends Fragment {
                 String title = (String) video.getJSONObject("data").getJSONObject("movie").get("title");
                 Log.d(TAG, title.toString());
             }
+            mUser.fb_wantsToWatchList = videosList;
         } catch (JSONException e) {
             e.printStackTrace();
         }
