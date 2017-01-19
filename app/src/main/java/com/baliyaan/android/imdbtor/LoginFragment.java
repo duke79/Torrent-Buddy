@@ -181,6 +181,7 @@ public class LoginFragment extends Fragment {
         if (accessToken == null) return;
         RequestFBBasicUserInfo(accessToken);
         RequestFBWantsToWatchList();
+        RequestFBFriendsWhoUseThisApp();
     }
 
     private void OnFirebaseLogOut() {
@@ -293,8 +294,36 @@ public class LoginFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        JSONArray arr = response.getJSONArray();
     }
+
+    private void RequestFBFriendsWhoUseThisApp() {
+        new GraphRequest(
+                AccessToken.getCurrentAccessToken(),
+                "/me/friends",
+                null,
+                HttpMethod.GET,
+                new GraphRequest.Callback() {
+                    public void onCompleted(GraphResponse response) {
+                        OnReturnedFBFriendsWhoUseThisApp(response);
+                    }
+                }
+        ).executeAsync();
+    }
+
+    private void OnReturnedFBFriendsWhoUseThisApp(GraphResponse response) {
+        if (response == null) return;
+        FacebookRequestError error = response.getError();
+        Log.d(TAG,response.toString());
+        JSONObject obj = response.getJSONObject();
+        try {
+            JSONArray friendsList = (JSONArray) obj.get("data");
+            mUser.fb_appFriends = friendsList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //TODO: Invite friends
 
     private void IntegrateFirebaseFBwithFBtoken(AccessToken token) {
         Log.d(TAG, "IntegrateFirebaseFBwithFBtoken:" + token);
