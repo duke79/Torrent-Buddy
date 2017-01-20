@@ -45,6 +45,7 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 
 /**
@@ -182,6 +183,24 @@ public class LoginFragment extends Fragment {
         RequestFBBasicUserInfo(accessToken);
         RequestFBWantsToWatchList();
         RequestFBFriendsWhoUseThisApp();
+        StoreOnFirebase();
+    }
+
+    private void StoreOnFirebase() {
+        if(mUser==null) return;
+
+        DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
+
+        // Creating new user node, which returns the unique key value
+        // new user node would be /users/$userid/
+        //String userId = mDatabase.push().getKey();
+        String userId = mAuth.getCurrentUser().getUid();
+        DatabaseReference user = users.child(userId);
+        String usreString = user.toString();
+
+        // pushing user to 'users' node using the userId
+        users.child(userId).setValue(mUser);
+        ArrayList<String> videos = mUser.GetFBWantsToWatchList();
     }
 
     private void OnFirebaseLogOut() {
@@ -222,14 +241,14 @@ public class LoginFragment extends Fragment {
 
     private void OnFBLoginError(FacebookException error) {
         Log.d(TAG, "facebook:onError", error);
-        Toast.makeText(getContext(), R.string.FBLoginError,Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), R.string.FBLoginError, Toast.LENGTH_SHORT).show();
     }
 
     private void RequestFBBasicUserInfo(AccessToken accessToken) {
         GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
-                OnReturnedFBBasicUserInfo(object,response);
+                OnReturnedFBBasicUserInfo(object, response);
             }
         });
         Bundle parameters = new Bundle();
@@ -261,6 +280,7 @@ public class LoginFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        StoreOnFirebase();
     }
 
     private void RequestFBWantsToWatchList() {
@@ -280,20 +300,20 @@ public class LoginFragment extends Fragment {
     private void OnReturnedFBWantsToWatchList(GraphResponse response) {
         if (response == null) return;
         FacebookRequestError error = response.getError();
-        Log.d(TAG,response.toString());
+        Log.d(TAG, response.toString());
         JSONObject obj = response.getJSONObject();
         try {
             JSONArray videosList = (JSONArray) obj.get("data");
-            for(int i = 0; i< videosList.length(); i++)
-            {
+            for (int i = 0; i < videosList.length(); i++) {
                 JSONObject video = videosList.getJSONObject(i);
                 String title = (String) video.getJSONObject("data").getJSONObject("movie").get("title");
                 Log.d(TAG, title.toString());
             }
-            mUser.fb_wantsToWatchList = videosList;
+            mUser.fb_wantsToWatchList = videosList.toString();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        StoreOnFirebase();
     }
 
     private void RequestFBFriendsWhoUseThisApp() {
@@ -313,14 +333,15 @@ public class LoginFragment extends Fragment {
     private void OnReturnedFBFriendsWhoUseThisApp(GraphResponse response) {
         if (response == null) return;
         FacebookRequestError error = response.getError();
-        Log.d(TAG,response.toString());
+        Log.d(TAG, response.toString());
         JSONObject obj = response.getJSONObject();
         try {
             JSONArray friendsList = (JSONArray) obj.get("data");
-            mUser.fb_appFriends = friendsList;
+            mUser.fb_appFriends = friendsList.toString();
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        StoreOnFirebase();
     }
 
     //TODO: Invite friends
@@ -351,16 +372,14 @@ public class LoginFragment extends Fragment {
         Profile profile = Profile.getCurrentProfile();
         if (profile != null) {
             Log.d(TAG, "Logged in User: " + profile.getFirstName() + " " + profile.getLastName());
-        }
-        else
-        {
+        } else {
             ShowHashKey(getContext());
         }
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
     }
 
-    public  void ShowHashKey(Context context) {
+    public void ShowHashKey(Context context) {
         try {
             PackageInfo info = context.getPackageManager().getPackageInfo("com.baliyaan.android.imdbtor",
                     PackageManager.GET_SIGNATURES);
@@ -368,7 +387,7 @@ public class LoginFragment extends Fragment {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
 
-                String sign= Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                String sign = Base64.encodeToString(md.digest(), Base64.DEFAULT);
                 Log.e("KeyHash:", sign);
                 //  Toast.makeText(getApplicationContext(),sign,     Toast.LENGTH_LONG).show();
             }

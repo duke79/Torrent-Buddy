@@ -1,11 +1,18 @@
 package com.baliyaan.android.imdbtor;
 
+import android.support.annotation.Keep;
+
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by Pulkit Singh on 1/18/2017.
  */
 
+@Keep
 public class User {
     public String fb_id;
     public String fb_cover_url;
@@ -20,7 +27,27 @@ public class User {
     public double fb_timezone;
     public String fb_updated_time;
     public boolean fb_verified;
-    public JSONArray fb_appFriends;
+    public String fb_appFriends;
     public String fb_email;
-    public JSONArray fb_wantsToWatchList;
+    public String fb_wantsToWatchList;
+
+    public User(){
+    }
+
+    public ArrayList<String> GetFBWantsToWatchList(){
+        ArrayList<String> arrayList = new ArrayList<>();
+        if(fb_wantsToWatchList == null)
+            return arrayList;
+        try {
+            JSONArray jsonArray = new JSONArray(fb_wantsToWatchList);
+            for(int i=0;i<jsonArray.length();i++)
+            {
+                String title = ((JSONObject)jsonArray.get(i)).getJSONObject("data").getJSONObject("movie").get("title").toString();
+                arrayList.add(title);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return arrayList;
+    }
 }
