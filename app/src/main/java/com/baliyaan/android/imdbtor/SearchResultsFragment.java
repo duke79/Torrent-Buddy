@@ -84,12 +84,13 @@ public class SearchResultsFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(final String query) {
                 assert mSearchView != null;
+                mQuery = query;
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
                         mTorrents.clear();
 
-                        mTorrents.addAll(TorrentProviderServices.GetTorrents(getActivity(), mQuery));
+                        mTorrents.addAll(TorrentProviderServices.GetTorrents(getActivity(), query));
                         int size = mTorrents.size();
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
@@ -114,7 +115,6 @@ public class SearchResultsFragment extends Fragment {
     {
         if(query==null)return;
         if(query.length()==0)return;
-        mQuery = query;
         mSearchView.setQuery(mQuery,true);
     }
 
@@ -140,6 +140,18 @@ public class SearchResultsFragment extends Fragment {
             {
                 MakeSearch(mQuery);
             }
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(mQuery!=null)
+        {
+            mQuery="";
+            mSearchView.setQuery(mQuery,true);
+            if(mTorrents!=null)
+                mTorrents.clear();
         }
     }
 

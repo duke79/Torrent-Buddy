@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -75,7 +76,8 @@ public class MainActivity
             mSearchResultsFragment = new SearchResultsFragment();
         }
         mSearchResultsFragment.Initiate(query);
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
         if (mLoginFragment != null)
             transaction.remove(mLoginFragment);
         if(mVideoListFragment != null)
@@ -83,6 +85,7 @@ public class MainActivity
         transaction.add(R.id.SearchResultsFragmentContainer, mSearchResultsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        //fm.executePendingTransactions();
     }
 
     @Override
