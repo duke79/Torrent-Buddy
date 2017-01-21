@@ -28,7 +28,7 @@ public class MainActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_search:
-                setupSearchResultsFragment("");
+                StartSearch("");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -70,10 +70,11 @@ public class MainActivity
         transaction.add(R.id.VideoListFragmentContainer, mVideoListFragment).commit();
     }
 
-    private void setupSearchResultsFragment(String query) {
+    public void StartSearch(String query) {
         if (mSearchResultsFragment == null) {
             mSearchResultsFragment = new SearchResultsFragment();
         }
+        mSearchResultsFragment.Initiate(query);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (mLoginFragment != null)
             transaction.remove(mLoginFragment);
@@ -82,7 +83,6 @@ public class MainActivity
         transaction.add(R.id.SearchResultsFragmentContainer, mSearchResultsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
-        mSearchResultsFragment.Initiate(query);
     }
 
     @Override

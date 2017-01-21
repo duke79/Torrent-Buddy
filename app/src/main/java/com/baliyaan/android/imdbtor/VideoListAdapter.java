@@ -67,29 +67,23 @@ public class VideoListAdapter extends BaseAdapter{
             LayoutInflater layoutInflater = ((Activity)mContext).getLayoutInflater();
             resultView = layoutInflater.inflate(R.layout.video, parent, false);
             ResultsViewHolder viewHolder = new ResultsViewHolder();
-            viewHolder.title = (TextView) resultView.findViewById(R.id.torrent_title);
-            viewHolder.category = (TextView) resultView.findViewById(R.id.torrent_category);
-            viewHolder.leeches = (TextView) resultView.findViewById(R.id.torrent_leeches);
-            viewHolder.provider = (TextView) resultView.findViewById(R.id.torrent_provider);
-            viewHolder.provider.setId(position);
-            viewHolder.provider.setOnClickListener(new View.OnClickListener() {
+            viewHolder.title = (TextView) resultView.findViewById(R.id.video_title);
+            viewHolder.title.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     int id = v.getId();
-                    Toast.makeText(mContext,"url",Toast.LENGTH_LONG).show();
+                    String videoTitle = mVideos.get(id);
+                    Toast.makeText(mContext,videoTitle,Toast.LENGTH_LONG).show();
+                    ((MainActivity)mContext).StartSearch(videoTitle);
+
                 }
             });
-            viewHolder.seeds = (TextView) resultView.findViewById(R.id.torrent_seeds);
-            viewHolder.size = (TextView) resultView.findViewById(R.id.torrent_size);
-            viewHolder.magnet = (ImageView) resultView.findViewById(R.id.icon_magnet);
-            viewHolder.url = (ImageView) resultView.findViewById(R.id.icon_url_link);
             resultView.setTag(viewHolder);
         }
 
         final ResultsViewHolder viewHolder = (ResultsViewHolder) resultView.getTag();
-        viewHolder.magnet.setId(position);
-        viewHolder.url.setId(position);
         viewHolder.title.setText(mVideos.get(position));
+        viewHolder.title.setId(position);
         if(mAnimate == true)
         {
             Animation animation = AnimationUtils.loadAnimation(mContext,android.R.anim.slide_in_left);

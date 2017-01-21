@@ -84,7 +84,6 @@ public class SearchResultsFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(final String query) {
                 assert mSearchView != null;
-                mQuery = query;
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
@@ -111,6 +110,14 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
+    public void MakeSearch(String query)
+    {
+        if(query==null)return;
+        if(query.length()==0)return;
+        mQuery = query;
+        mSearchView.setQuery(mQuery,true);
+    }
+
     private void setupResultsList(View view) {
         mResultsList = (ListViewCompat) view.findViewById(R.id.Results);
         mResultListAdapter = new ResultListAdapter(getActivity(), mTorrents);
@@ -122,6 +129,18 @@ public class SearchResultsFragment extends Fragment {
                 Toast.makeText(getActivity(), torrent.title, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(mQuery!=null)
+        {
+            if(mQuery.length()>0)
+            {
+                MakeSearch(mQuery);
+            }
+        }
     }
 
     @Override
