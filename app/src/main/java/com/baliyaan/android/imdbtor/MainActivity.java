@@ -11,11 +11,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements LoginFragment.OnFragmentInteractionListener, SearchResultsFragment.OnFragmentInteractionListener {
+public class MainActivity
+        extends AppCompatActivity
+        implements LoginFragment.OnFragmentInteractionListener,
+                SearchResultsFragment.OnFragmentInteractionListener,
+                VideoListFragment.OnFragmentInteractionListener {
     public Context mContext;
     SearchView mSearchView = null;
     SearchResultsFragment mSearchResultsFragment = null;
     LoginFragment mLoginFragment = null;
+    VideoListFragment mVideoListFragment = null;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -42,6 +47,16 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         mContext = this;
 
         setupLoginFragment();
+        setupVideoListFragment();
+    }
+
+    private void setupVideoListFragment() {
+        if (mVideoListFragment == null)
+            mVideoListFragment = new VideoListFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if (mSearchResultsFragment != null)
+            transaction.remove(mSearchResultsFragment);
+        transaction.add(R.id.activity_main, mVideoListFragment).commit();
     }
 
     private void setupSearchResultsFragment(String query) {
@@ -51,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements LoginFragment.OnF
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         if (mLoginFragment != null)
             transaction.remove(mLoginFragment);
+        if(mVideoListFragment != null)
+            transaction.remove(mVideoListFragment);
         transaction.add(R.id.activity_main, mSearchResultsFragment);
         transaction.addToBackStack(null);
         transaction.commit();

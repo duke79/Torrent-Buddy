@@ -45,7 +45,6 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 
 
 /**
@@ -200,7 +199,6 @@ public class LoginFragment extends Fragment {
 
         // pushing user to 'users' node using the userId
         users.child(userId).setValue(mUser);
-        ArrayList<String> videos = mUser.GetFBWantsToWatchList();
     }
 
     private void OnFirebaseLogOut() {

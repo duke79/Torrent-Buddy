@@ -30,8 +30,10 @@ public class User {
     public String fb_appFriends;
     public String fb_email;
     public String fb_wantsToWatchList;
+    private static User mUser;
 
     public User(){
+        mUser = this;
     }
 
     public ArrayList<String> GetFBWantsToWatchList(){
@@ -49,5 +51,10 @@ public class User {
             e.printStackTrace();
         }
         return arrayList;
+    }
+
+    public static User GetUser()
+    {
+        return mUser;
     }
 }
