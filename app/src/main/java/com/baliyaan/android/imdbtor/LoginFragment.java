@@ -125,8 +125,11 @@ public class LoginFragment extends Fragment {
     }
 
     private void InitializeFirebase() {
+        // Disk persistence for fire-base database (makes it work offline)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Set listener for Auth State changed
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -143,10 +146,6 @@ public class LoginFragment extends Fragment {
                 }
             }
         };
-
-        // Disk persistence for fire-base database (makes it work offline)
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
@@ -333,6 +332,7 @@ public class LoginFragment extends Fragment {
         FacebookRequestError error = response.getError();
         Log.d(TAG, response.toString());
         JSONObject obj = response.getJSONObject();
+        if(obj==null)return;
         try {
             JSONArray friendsList = (JSONArray) obj.get("data");
             mUser.fb_appFriends = friendsList.toString();

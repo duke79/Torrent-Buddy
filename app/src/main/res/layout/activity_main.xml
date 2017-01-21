@@ -5,4 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.baliyaan.android.imdbtor.MainActivity">
+    <FrameLayout
+        android:id="@+id/LoginFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></FrameLayout>
+    <FrameLayout
+        android:id="@+id/VideoListFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/LoginFragmentContainer"></FrameLayout>
+    <FrameLayout
+        android:id="@+id/SearchResultsFragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></FrameLayout>
 </RelativeLayout>

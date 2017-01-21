@@ -50,13 +50,22 @@ public class MainActivity
         setupVideoListFragment();
     }
 
+    private void setupLoginFragment() {
+        if (mLoginFragment == null)
+            mLoginFragment = new LoginFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        //if (mSearchResultsFragment != null)
+          //  transaction.remove(mSearchResultsFragment);
+        transaction.add(R.id.LoginFragmentContainer, mLoginFragment).commit();
+    }
+
     private void setupVideoListFragment() {
         if (mVideoListFragment == null)
             mVideoListFragment = new VideoListFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (mSearchResultsFragment != null)
-            transaction.remove(mSearchResultsFragment);
-        transaction.add(R.id.activity_main, mVideoListFragment).commit();
+        //if (mSearchResultsFragment != null)
+          //  transaction.remove(mSearchResultsFragment);
+        transaction.add(R.id.VideoListFragmentContainer, mVideoListFragment).commit();
     }
 
     private void setupSearchResultsFragment(String query) {
@@ -68,7 +77,7 @@ public class MainActivity
             transaction.remove(mLoginFragment);
         if(mVideoListFragment != null)
             transaction.remove(mVideoListFragment);
-        transaction.add(R.id.activity_main, mSearchResultsFragment);
+        transaction.add(R.id.SearchResultsFragmentContainer, mSearchResultsFragment);
         transaction.addToBackStack(null);
         transaction.commit();
         mSearchResultsFragment.Initiate(query);
@@ -78,15 +87,6 @@ public class MainActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mLoginFragment.onActivityResult(requestCode,resultCode,data);
-    }
-
-    private void setupLoginFragment() {
-        if (mLoginFragment == null)
-            mLoginFragment = new LoginFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if (mSearchResultsFragment != null)
-            transaction.remove(mSearchResultsFragment);
-        transaction.add(R.id.activity_main, mLoginFragment).commit();
     }
 
     @Override
