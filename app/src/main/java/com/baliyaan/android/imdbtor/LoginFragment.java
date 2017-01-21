@@ -300,6 +300,7 @@ public class LoginFragment extends Fragment {
         FacebookRequestError error = response.getError();
         Log.d(TAG, response.toString());
         JSONObject obj = response.getJSONObject();
+        if(obj==null)return;
         try {
             JSONArray videosList = (JSONArray) obj.get("data");
             for (int i = 0; i < videosList.length(); i++) {
