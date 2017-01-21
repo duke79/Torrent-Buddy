@@ -62,22 +62,18 @@ public class VideoListFragment extends Fragment {
         mVideoList = (ListViewCompat) view.findViewById(R.id.Videos);
         mVideoListAdapter = new VideoListAdapter(getActivity(), mVideos);
         mVideoList.setAdapter(mVideoListAdapter);
-        new Thread(new Runnable() {
+    }
+
+    public void OnVideosListUpdated(ArrayList<String> videos)
+    {
+        mVideos.clear();
+        mVideos.addAll(videos);
+        getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                mVideos.clear();
-
-                User user = User.GetUser();
-                mVideos.addAll(user.GetFBWantsToWatchList());
-                int size = mVideos.size();
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mVideoListAdapter.notifyDataSetChanged();
-                    }
-                });
+                mVideoListAdapter.notifyDataSetChanged();
             }
-        }).start();
+        });
     }
 
     @Override

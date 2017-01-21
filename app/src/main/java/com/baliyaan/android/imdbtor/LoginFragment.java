@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -45,6 +44,7 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 
 
 /**
@@ -198,6 +198,7 @@ public class LoginFragment extends Fragment {
 
         // pushing user to 'users' node using the userId
         users.child(userId).setValue(mUser);
+        mListener.onUserInfoUpdated(mUser.GetFBWantsToWatchList());
     }
 
     private void OnFirebaseLogOut() {
@@ -397,13 +398,6 @@ public class LoginFragment extends Fragment {
         }
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -440,6 +434,6 @@ public class LoginFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void onUserInfoUpdated(ArrayList<String> videosList);
     }
 }
