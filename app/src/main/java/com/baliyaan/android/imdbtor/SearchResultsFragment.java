@@ -1,8 +1,11 @@
 package com.baliyaan.android.imdbtor;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ListViewCompat;
@@ -41,6 +44,8 @@ public class SearchResultsFragment extends Fragment {
     ResultListAdapter mResultListAdapter = null;
     ArrayList<Torrent> mTorrents = new ArrayList<>();
     private SearchView mSearchView;
+    private Activity mActivity;
+    private Handler mHandler;
 
     public SearchResultsFragment() {
         // Required empty public constructor
@@ -84,22 +89,7 @@ public class SearchResultsFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(final String query) {
                 assert mSearchView != null;
-                mQuery = query;
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        mTorrents.clear();
-
-                        mTorrents.addAll(TorrentProviderServices.GetTorrents(getActivity(), query));
-                        int size = mTorrents.size();
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                mResultListAdapter.notifyDataSetChanged();
-                            }
-                        });
-                    }
-                }).start();
+                MakeSearch(query);
                 return true;
             }
 
@@ -111,22 +101,37 @@ public class SearchResultsFragment extends Fragment {
         });
     }
 
-    public void MakeSearch(String query)
-    {
-        if(query==null)return;
-        if(query.length()==0)return;
-        mSearchView.setQuery(mQuery,true);
+    private void MakeSearch(final String query) {
+        mQuery = query;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mTorrents.clear();
+                final ArrayList<Torrent> torrents = TorrentProviderServices.GetTorrents(mActivity, query);
+                int size = mTorrents.size();
+                if(mHandler==null)
+                    mHandler = new Handler(Looper.getMainLooper());
+                Runnable myRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        mTorrents.addAll(torrents);
+                        mResultListAdapter.notifyDataSetChanged();
+                    }
+                };
+                mHandler.post(myRunnable);
+            }
+        }).start();
     }
 
     private void setupResultsList(View view) {
         mResultsList = (ListViewCompat) view.findViewById(R.id.Results);
-        mResultListAdapter = new ResultListAdapter(getActivity(), mTorrents);
+        mResultListAdapter = new ResultListAdapter(mActivity, mTorrents);
         mResultsList.setAdapter(mResultListAdapter);
         mResultsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Torrent torrent = (Torrent) mResultListAdapter.getItem(position);
-                Toast.makeText(getActivity(), torrent.title, Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, torrent.title, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -138,6 +143,7 @@ public class SearchResultsFragment extends Fragment {
         {
             if(mQuery.length()>0)
             {
+                mSearchView.setQuery(mQuery,false);
                 MakeSearch(mQuery);
             }
         }
@@ -150,8 +156,15 @@ public class SearchResultsFragment extends Fragment {
         {
             mQuery="";
             mSearchView.setQuery(mQuery,true);
-            if(mTorrents!=null)
-                mTorrents.clear();
+            mActivity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(mTorrents!=null) {
+                        mTorrents.clear();
+                        mResultListAdapter.notifyDataSetChanged();
+                    }
+                }
+            });
         }
     }
 
@@ -171,7 +184,7 @@ public class SearchResultsFragment extends Fragment {
         backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().onBackPressed();
+                mActivity.onBackPressed();
             }
         });
     }
@@ -186,23 +199,25 @@ public class SearchResultsFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        mActivity = (Activity)context;
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+        ((AppCompatActivity)mActivity).getSupportActionBar().hide();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+        ((AppCompatActivity)mActivity).getSupportActionBar().show();
+        mActivity = null;
     }
 
-    public void Initiate(final String query) {
+    public void SearchOnStart(final String query) {
         mQuery = query;
     }
 

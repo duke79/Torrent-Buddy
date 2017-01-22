@@ -75,7 +75,7 @@ public class MainActivity
         if (mSearchResultsFragment == null) {
             mSearchResultsFragment = new SearchResultsFragment();
         }
-        mSearchResultsFragment.Initiate(query);
+        mSearchResultsFragment.SearchOnStart(query);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
         if (mLoginFragment != null)
