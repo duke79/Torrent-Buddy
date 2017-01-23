@@ -66,6 +66,8 @@ public class VideoListFragment extends Fragment {
 
     public void OnVideosListUpdated(ArrayList<String> videos)
     {
+        if(mVideos==null)return;
+        if(mVideos.containsAll(videos))return;
         mVideos.clear();
         mVideos.addAll(videos);
         getActivity().runOnUiThread(new Runnable() {
