@@ -16,6 +16,7 @@ import com.baliyaan.android.FSM.Action;
 import com.baliyaan.android.FSM.Condition;
 import com.baliyaan.android.FSM.FSM;
 import com.baliyaan.android.FSM.Transition;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,7 @@ public class MainActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_search:
-                StartSearch("");
+                FSM.transit(null);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -54,29 +55,70 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         mContext = this;
 
+        // Disk persistence for fire-base database (makes it work offline)
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true); // Crash if re-called due to a fragment
+
         InitializeFSM();
     }
 
     private void InitializeFSM() {
-        FSM.addStates(new String[]{"Root","LoginPrompt"});
+        FSM.addStates(new String[]{
+                "Root","LoginPrompt","SearchResults"
+        });
 
-        Transition allowLoginTrans =
-                new Transition("Root","","LoginPrompt")
-                        .setAction(new Action() {
-                            @Override
-                            public void run(Bundle data) {
-                                setupLoginFragment();
-                                setupVideoListFragment();
-                            }
-                        })
-                        .setCondition(new Condition() {
-                             @Override
-                            public boolean isGo() {
-                                return super.isGo();
-                            }
-                        });
+        new Transition("Root","","LoginPrompt")
+                .setAction(new Action() {
+                    @Override
+                    public void run(Bundle data) {
+                        setupLoginFragment();
+                        setupVideoListFragment();
+                    }
+                });
+
+        new Transition("LoginPrompt","","SearchResults")
+                .setAction(new Action() {
+                    @Override
+                    public void run(Bundle data) {
+                        String query = "";
+                        if(data!=null)
+                            query = data.getString("query");
+                        StartSearch(query);
+                    }
+                });
+
+        new Transition("SearchResults","","LoginPrompt")
+                .setAction(new Action() {
+                    @Override
+                    public void run(Bundle data) {
+                        FragmentManager fm = getSupportFragmentManager();
+                        FragmentTransaction transaction = fm.beginTransaction();
+
+                        if (mLoginFragment != null)
+                            transaction.remove(mSearchResultsFragment);
+                        transaction.add(R.id.LoginFragmentContainer, mLoginFragment);
+                        transaction.add(R.id.VideoListFragmentContainer, mVideoListFragment);
+                        transaction.commit();
+                    }
+                })
+                .setCondition(new Condition() {
+                    @Override
+                    public boolean isGo(Bundle data) {
+                        if(data!=null) {
+                            if(data.getBoolean("backPressed"))
+                                return true;
+                        }
+                        return false;
+                    }
+                });
 
         FSM.transit(null);
+    }
+
+    @Override
+    public void onBackPressed() {
+        Bundle data = new Bundle();
+        data.putBoolean("backPressed",true);
+        FSM.transit(data);
     }
 
     private void setupLoginFragment() {
@@ -109,7 +151,7 @@ public class MainActivity
         if (mVideoListFragment != null)
             transaction.remove(mVideoListFragment);
         transaction.add(R.id.SearchResultsFragmentContainer, mSearchResultsFragment);
-        transaction.addToBackStack(null);
+        //transaction.addToBackStack(null);
         transaction.commit();
         //fm.executePendingTransactions();
     }

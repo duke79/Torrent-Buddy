@@ -2,6 +2,7 @@ package com.baliyaan.android.imdbtor;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.baliyaan.android.FSM.FSM;
 
 import java.util.ArrayList;
 
@@ -74,7 +77,10 @@ public class VideoListAdapter extends BaseAdapter{
                     int id = v.getId();
                     String videoTitle = mVideos.get(id);
                     Toast.makeText(mContext,videoTitle,Toast.LENGTH_LONG).show();
-                    ((MainActivity)mContext).StartSearch(videoTitle);
+                    //((MainActivity)mContext).StartSearch(videoTitle);
+                    Bundle data = new Bundle();
+                    data.putString("query",videoTitle);
+                    FSM.transit(data);
 
                 }
             });

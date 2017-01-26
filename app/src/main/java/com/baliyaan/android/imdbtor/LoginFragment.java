@@ -125,8 +125,6 @@ public class LoginFragment extends Fragment {
     }
 
     private void InitializeFirebase() {
-        // Disk persistence for fire-base database (makes it work offline)
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
