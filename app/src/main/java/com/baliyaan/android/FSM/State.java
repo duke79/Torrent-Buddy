@@ -25,6 +25,9 @@ public class State {
         return this;
     }
 
+    /*
+    * In that case of ambiguous transitions, only one of them will be considered.
+     */
     protected State transit(Bundle data) {
         State nextState = this;
         int nbrTransitions = mTransitions.size();

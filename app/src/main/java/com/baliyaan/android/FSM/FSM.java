@@ -33,7 +33,7 @@ public class FSM {
         State state = new State(stateName);
         states.put(stateName,state);
 
-        if(states.size()==1)  // First state to be considered the root state.
+        if(mCurrentState==null && states.size()==1)  // First state to be considered the root state.
             mCurrentState = state;
 
         return null;
@@ -61,9 +61,14 @@ public class FSM {
         return null; // for chaining
     }
 
+    /*
+    * In that case of ambiguous transitions, only one of them will be considered.
+     */
     public static FSM transit(Bundle data){
         if(mCurrentState==null)return null;
-        mCurrentState.transit(data);
+        State state = mCurrentState.transit(data);
+        if(state!=null)
+            mCurrentState = state;
         return null;
     }
 

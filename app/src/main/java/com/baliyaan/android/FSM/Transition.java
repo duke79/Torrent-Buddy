@@ -21,11 +21,11 @@ public class Transition {
         State targetState = FSM.getState(targetStateName);
         mTargetState = targetState;
 
-        FSM.getState("Root").addTransition(this);
+        FSM.getState(startStateName).addTransition(this);
     }
 
     protected State tryTransition(final Bundle data) {
-        if(mCondition==null || mCondition.isGo())
+        if(mCondition==null || mCondition.isGo(data))
         {
             new Thread(new Runnable() {
                 @Override
@@ -33,6 +33,7 @@ public class Transition {
                     mAction.run(data);
                 }
             }).start();
+            return mTargetState;
         }
         return null;
     }
