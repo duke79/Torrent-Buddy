@@ -12,13 +12,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.baliyaan.android.FSM.Action;
+import com.baliyaan.android.FSM.Condition;
+import com.baliyaan.android.FSM.FSM;
+import com.baliyaan.android.FSM.Transition;
+
 import java.util.ArrayList;
 
 public class MainActivity
         extends AppCompatActivity
         implements LoginFragment.OnFragmentInteractionListener,
-                SearchResultsFragment.OnFragmentInteractionListener,
-                VideoListFragment.OnFragmentInteractionListener {
+        SearchResultsFragment.OnFragmentInteractionListener,
+        VideoListFragment.OnFragmentInteractionListener {
     public Context mContext;
     SearchView mSearchView = null;
     SearchResultsFragment mSearchResultsFragment = null;
@@ -49,8 +54,29 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         mContext = this;
 
-        setupLoginFragment();
-        setupVideoListFragment();
+        InitializeFSM();
+    }
+
+    private void InitializeFSM() {
+        FSM.addStates(new String[]{"Root","LoginPrompt"});
+
+        Transition allowLoginTrans =
+                new Transition("Root","","LoginPrompt")
+                        .setAction(new Action() {
+                            @Override
+                            public void run(Bundle data) {
+                                setupLoginFragment();
+                                setupVideoListFragment();
+                            }
+                        })
+                        .setCondition(new Condition() {
+                             @Override
+                            public boolean isGo() {
+                                return super.isGo();
+                            }
+                        });
+
+        FSM.transit(null);
     }
 
     private void setupLoginFragment() {
@@ -58,7 +84,7 @@ public class MainActivity
             mLoginFragment = new LoginFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //if (mSearchResultsFragment != null)
-          //  transaction.remove(mSearchResultsFragment);
+        //  transaction.remove(mSearchResultsFragment);
         transaction.add(R.id.LoginFragmentContainer, mLoginFragment).commit();
     }
 
@@ -67,7 +93,7 @@ public class MainActivity
             mVideoListFragment = new VideoListFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         //if (mSearchResultsFragment != null)
-          //  transaction.remove(mSearchResultsFragment);
+        //  transaction.remove(mSearchResultsFragment);
         transaction.add(R.id.VideoListFragmentContainer, mVideoListFragment).commit();
     }
 
@@ -80,7 +106,7 @@ public class MainActivity
         FragmentTransaction transaction = fm.beginTransaction();
         if (mLoginFragment != null)
             transaction.remove(mLoginFragment);
-        if(mVideoListFragment != null)
+        if (mVideoListFragment != null)
             transaction.remove(mVideoListFragment);
         transaction.add(R.id.SearchResultsFragmentContainer, mSearchResultsFragment);
         transaction.addToBackStack(null);
@@ -91,7 +117,7 @@ public class MainActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mLoginFragment.onActivityResult(requestCode,resultCode,data);
+        mLoginFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -101,8 +127,8 @@ public class MainActivity
 
     @Override
     public void onUserInfoUpdated(ArrayList<String> videosList) {
-        if(null==videosList)return;
-        if(videosList.size()>0)
+        if (null == videosList) return;
+        if (videosList.size() > 0)
             mVideoListFragment.OnVideosListUpdated(videosList);
     }
 }
