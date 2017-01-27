@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baliyaan.android.FSM.FSM;
+import com.baliyaan.android.afsm.FSM;
 
 import java.util.ArrayList;
 

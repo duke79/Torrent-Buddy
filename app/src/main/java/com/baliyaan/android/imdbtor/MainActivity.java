@@ -12,10 +12,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.baliyaan.android.FSM.Action;
-import com.baliyaan.android.FSM.Condition;
-import com.baliyaan.android.FSM.FSM;
-import com.baliyaan.android.FSM.Transition;
+import com.baliyaan.android.afsm.Action;
+import com.baliyaan.android.afsm.Condition;
+import com.baliyaan.android.afsm.FSM;
+import com.baliyaan.android.afsm.Transition;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
