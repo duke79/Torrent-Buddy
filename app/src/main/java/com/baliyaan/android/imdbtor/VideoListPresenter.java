@@ -28,9 +28,16 @@ public class VideoListPresenter {
     }
 
     public void setupVideoList(View view) {
-        mVideoList = (ListViewCompat) view.findViewById(R.id.Videos);
+        mVideoList = (ListViewCompat) view;//(ListViewCompat) view.findViewById(R.id.Videos);
         mVideoListAdapter = new VideoListAdapter(mContext, mVideos);
-        mVideoList.setAdapter(mVideoListAdapter);
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mVideoList.setAdapter(mVideoListAdapter);
+            }
+        };
+        handler.post(myRunnable);
     }
 
     @Subscribe

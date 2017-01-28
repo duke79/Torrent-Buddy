@@ -9,11 +9,14 @@
         android:id="@+id/LoginFragmentContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></FrameLayout>
-    <FrameLayout
-        android:id="@+id/VideoListFragmentContainer"
+    <android.support.v7.widget.ListViewCompat
+        android:id="@+id/Videos"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/LoginFragmentContainer"></FrameLayout>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/LoginFragmentContainer"
+        android:background="@android:color/darker_gray"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="@dimen/row_spacing" />
     <FrameLayout
         android:id="@+id/SearchResultsFragmentContainer"
         android:layout_width="match_parent"
