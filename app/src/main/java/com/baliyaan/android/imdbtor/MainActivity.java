@@ -23,6 +23,7 @@ import com.baliyaan.android.afsm.Transition;
 import com.baliyaan.android.login.LoginFragment;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
 public class MainActivity
@@ -41,8 +42,9 @@ public class MainActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_search:
-                Event.SearchTorrent searchTorrentEvent = new Event.SearchTorrent();
-                FSM.transit(searchTorrentEvent);
+                Event.SearchTorrent event = new Event.SearchTorrent();
+                bus.post(event);
+                //FSM.transit(searchTorrentEvent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -61,6 +63,8 @@ public class MainActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
+
+        bus.register(this);
 
         // Disk persistence for fire-base database (makes it work offline)
         FirebaseDatabase.getInstance().setPersistenceEnabled(true); // Crash if re-called due to a fragment
@@ -140,8 +144,12 @@ public class MainActivity
                         return false;
                     }
                 });
-
         FSM.transit(null);
+    }
+
+    @Subscribe
+    public void OnEvent(Event event){
+        FSM.transit(event);
     }
 
     private void setupVideoListView() {
@@ -152,7 +160,7 @@ public class MainActivity
     @Override
     public void onBackPressed() {
         Event.BackPressed backPressedEvent = new Event.BackPressed();
-        FSM.transit(backPressedEvent);
+        bus.post(backPressedEvent);
     }
 
     private void setupLoginFragment() {

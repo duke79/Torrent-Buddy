@@ -12,8 +12,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.baliyaan.android.afsm.FSM;
-
 import java.util.ArrayList;
 
 import static java.lang.Boolean.TRUE;
@@ -79,7 +77,7 @@ public class VideoListAdapter extends BaseAdapter{
                     // Start search
                     Event.SearchTorrent searchTorrentEvent = new Event.SearchTorrent();
                     searchTorrentEvent.query = videoTitle;
-                    FSM.transit(searchTorrentEvent);
+                    MainActivity.bus.post(searchTorrentEvent);
 
                 }
             });
