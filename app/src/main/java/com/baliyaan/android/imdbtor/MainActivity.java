@@ -24,8 +24,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Bus;
 import com.squareup.otto.ThreadEnforcer;
 
-import java.util.ArrayList;
-
 public class MainActivity
         extends AppCompatActivity
         implements LoginFragment.OnFragmentInteractionListener,
@@ -180,13 +178,5 @@ public class MainActivity
     @Override
     public void onFragmentInteraction(Uri uri) {
         // Required only for communication among fragments
-    }
-
-    @Override
-    public void onUserInfoUpdated(ArrayList<String> videosList) {
-        if (null == videosList) return;
-        if (videosList.size() > 0) {
-            bus.post(videosList);
-        }
     }
 }

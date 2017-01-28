@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.baliyaan.android.imdbtor.MainActivity;
 import com.baliyaan.android.imdbtor.R;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
@@ -45,7 +46,6 @@ import org.json.JSONObject;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 
 
 /**
@@ -197,7 +197,9 @@ public class LoginFragment extends Fragment {
 
         // pushing user to 'users' node using the userId
         users.child(userId).setValue(mUser);
-        mListener.onUserInfoUpdated(mUser.GetFBWantsToWatchList());
+
+        if(mUser.GetFBWantsToWatchList().size()>0)
+            MainActivity.bus.post(mUser.GetFBWantsToWatchList());
     }
 
     private void OnFirebaseLogOut() {
@@ -433,7 +435,6 @@ public class LoginFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onUserInfoUpdated(ArrayList<String> videosList);
+        //
     }
 }
