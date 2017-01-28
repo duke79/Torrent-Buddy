@@ -9,7 +9,6 @@ import android.os.Looper;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +20,7 @@ import com.baliyaan.android.afsm.Condition;
 import com.baliyaan.android.afsm.FSM;
 import com.baliyaan.android.afsm.Transition;
 import com.baliyaan.android.login.LoginFragment;
+import com.baliyaan.android.login.Services;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -30,13 +30,16 @@ public class MainActivity
         extends AppCompatActivity
         implements LoginFragment.OnFragmentInteractionListener,
         SearchResultsFragment.OnFragmentInteractionListener {
+
     public Context mContext;
-    public static Bus bus = new Bus(ThreadEnforcer.ANY);
-    SearchView mSearchView = null;
-    SearchResultsFragment mSearchResultsFragment = null;
-    LoginFragment mLoginFragment = null;
-    private View mVideosView;
     public String TAG = MainActivity.class.getSimpleName();
+
+    public static Bus bus = new Bus(ThreadEnforcer.ANY);
+
+    SearchResultsFragment mSearchResultsFragment = null;
+    private View mVideosView = null;
+    private View mFBLoginView = null;
+    private Services mLoginServices = null;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -82,7 +85,7 @@ public class MainActivity
                     @Override
                     public void run(Object data) {
                         setupVideoListView();
-                        setupLoginFragment();
+                        setupLogin();
                     }
                 });
 
@@ -98,6 +101,7 @@ public class MainActivity
                             Runnable myRunnable = new Runnable() {
                                 @Override
                                 public void run() {
+                                    mFBLoginView.setVisibility(View.GONE);
                                     mVideosView.setVisibility(View.GONE);
                                 }
                             };
@@ -113,21 +117,15 @@ public class MainActivity
                 .setAction(new Action() {
                     @Override
                     public void run(Object data) {
-                        FragmentManager fm = getSupportFragmentManager();
-                        FragmentTransaction transaction = fm.beginTransaction();
-
-                        if (mLoginFragment != null)
-                            transaction.remove(mSearchResultsFragment);
                         Handler handler = new Handler(Looper.getMainLooper());
                         Runnable myRunnable = new Runnable() {
                             @Override
                             public void run() {
+                                mFBLoginView.setVisibility(View.VISIBLE);
                                 mVideosView.setVisibility(View.VISIBLE);
                             }
                         };
                         handler.post(myRunnable);
-                        transaction.add(R.id.LoginFragmentContainer, mLoginFragment);
-                        transaction.commit();
                     }
                 })
                 .setCondition(new Condition() {
@@ -163,13 +161,9 @@ public class MainActivity
         bus.post(backPressedEvent);
     }
 
-    private void setupLoginFragment() {
-        if (mLoginFragment == null)
-            mLoginFragment = new LoginFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        //if (mSearchResultsFragment != null)
-        //  transaction.remove(mSearchResultsFragment);
-        transaction.add(R.id.LoginFragmentContainer, mLoginFragment).commit();
+    private void setupLogin() {
+        mFBLoginView = findViewById(R.id.fb_login_button);
+        mLoginServices = Services.getInstance(mContext,mFBLoginView,bus);
     }
 
     public void StartSearch(String query) {
@@ -179,8 +173,6 @@ public class MainActivity
         mSearchResultsFragment.SearchOnStart(query);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        if (mLoginFragment != null)
-            transaction.remove(mLoginFragment);
         transaction.add(R.id.SearchResultsFragmentContainer, mSearchResultsFragment);
         //transaction.addToBackStack(null);
         transaction.commit();
@@ -190,7 +182,7 @@ public class MainActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        mLoginFragment.onActivityResult(requestCode, resultCode, data);
+        mLoginServices.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * Created by Pulkit Singh on 12/25/2016.
  */
 
-public class TorrentProvider {
+public class Provider {
     public String title;
     public String searchURL;
     public String magnetsSelector;

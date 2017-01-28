@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.baliyaan.android.torrents.Torrent;
-import com.baliyaan.android.torrents.TorrentProviderServices;
+import com.baliyaan.android.torrents.Services;
 
 import java.util.ArrayList;
 
@@ -110,7 +110,7 @@ public class SearchResultsFragment extends Fragment {
             @Override
             public void run() {
                 mTorrents.clear();
-                final ArrayList<Torrent> torrents = TorrentProviderServices.GetTorrents(mActivity, query);
+                final ArrayList<Torrent> torrents = Services.GetTorrents(mActivity, query);
                 int size = mTorrents.size();
                 if(mHandler==null)
                     mHandler = new Handler(Looper.getMainLooper());

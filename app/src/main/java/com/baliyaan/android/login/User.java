@@ -55,6 +55,10 @@ public class User {
 
     public static User GetUser()
     {
+        if(mUser==null)
+        {
+            mUser = new User();
+        }
         return mUser;
     }
 }
