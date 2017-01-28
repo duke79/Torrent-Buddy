@@ -6,22 +6,27 @@
     android:layout_height="match_parent"
     tools:context="com.baliyaan.android.imdbtor.MainActivity">
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/fb_login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp"
-        />
-    <android.support.v7.widget.ListViewCompat
-        android:id="@+id/Videos"
+    <LinearLayout
+        android:id="@+id/HomePage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/fb_login_button"
-        android:background="@android:color/darker_gray"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="@dimen/row_spacing" />
+        android:orientation="vertical">
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/fb_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="30dp"
+            />
+        <android.support.v7.widget.ListViewCompat
+            android:id="@+id/Videos"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/darker_gray"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="@dimen/row_spacing" />
+    </LinearLayout>
     <FrameLayout
         android:id="@+id/SearchResultsFragmentContainer"
         android:layout_width="match_parent"

@@ -19,7 +19,6 @@ import com.baliyaan.android.afsm.Action;
 import com.baliyaan.android.afsm.Condition;
 import com.baliyaan.android.afsm.FSM;
 import com.baliyaan.android.afsm.Transition;
-import com.baliyaan.android.login.LoginFragment;
 import com.baliyaan.android.login.Services;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Bus;
@@ -28,8 +27,7 @@ import com.squareup.otto.ThreadEnforcer;
 
 public class MainActivity
         extends AppCompatActivity
-        implements LoginFragment.OnFragmentInteractionListener,
-        SearchResultsFragment.OnFragmentInteractionListener {
+        implements SearchResultsFragment.OnFragmentInteractionListener {
 
     public Context mContext;
     public String TAG = MainActivity.class.getSimpleName();
@@ -40,6 +38,7 @@ public class MainActivity
     private View mVideosView = null;
     private View mFBLoginView = null;
     private Services mLoginServices = null;
+    private View mHomePage = null;
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -86,6 +85,7 @@ public class MainActivity
                     public void run(Object data) {
                         setupVideoListView();
                         setupLogin();
+                        mHomePage = findViewById(R.id.HomePage);
                     }
                 });
 
@@ -101,8 +101,9 @@ public class MainActivity
                             Runnable myRunnable = new Runnable() {
                                 @Override
                                 public void run() {
-                                    mFBLoginView.setVisibility(View.GONE);
-                                    mVideosView.setVisibility(View.GONE);
+                                    //mFBLoginView.setVisibility(View.GONE);
+                                    //mVideosView.setVisibility(View.GONE);
+                                    mHomePage.setVisibility(View.GONE);
                                 }
                             };
                             handler.post(myRunnable);
@@ -111,18 +112,38 @@ public class MainActivity
                             Log.e(TAG, "Invalid SearchTorrent object");
                         }
                     }
-                });
+                })
+        .setCondition(new Condition() {
+            @Override
+            public boolean isGo(Object data) {
+                if (data == null) return false;
+                try {
+                    Event.SearchTorrent backPressed = (Event.SearchTorrent) data;
+                    if (backPressed == null) return false;
+                    return true;
+                }catch (ClassCastException e){
+                    Log.e(TAG,"Invalid SearchTorrent object");
+                }
+                return false;
+            }
+        });
 
         new Transition("SearchResults", "", "LoginPrompt")
                 .setAction(new Action() {
                     @Override
                     public void run(Object data) {
+
+                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                        if (mSearchResultsFragment != null)
+                          transaction.remove(mSearchResultsFragment).commit();
+
                         Handler handler = new Handler(Looper.getMainLooper());
                         Runnable myRunnable = new Runnable() {
                             @Override
                             public void run() {
-                                mFBLoginView.setVisibility(View.VISIBLE);
-                                mVideosView.setVisibility(View.VISIBLE);
+                                //mFBLoginView.setVisibility(View.VISIBLE);
+                                //mVideosView.setVisibility(View.VISIBLE);
+                                mHomePage.setVisibility(View.VISIBLE);
                             }
                         };
                         handler.post(myRunnable);
