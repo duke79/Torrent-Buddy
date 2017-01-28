@@ -2,7 +2,6 @@ package com.baliyaan.android.imdbtor;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,10 +76,10 @@ public class VideoListAdapter extends BaseAdapter{
                     int id = v.getId();
                     String videoTitle = mVideos.get(id);
                     Toast.makeText(mContext,videoTitle,Toast.LENGTH_LONG).show();
-                    //((MainActivity)mContext).StartSearch(videoTitle);
-                    Bundle data = new Bundle();
-                    data.putString("query",videoTitle);
-                    FSM.transit(data);
+                    // Start search
+                    Event.SearchTorrent searchTorrentEvent = new Event.SearchTorrent();
+                    searchTorrentEvent.query = videoTitle;
+                    FSM.transit(searchTorrentEvent);
 
                 }
             });

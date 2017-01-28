@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,19 +28,21 @@ import com.squareup.otto.ThreadEnforcer;
 public class MainActivity
         extends AppCompatActivity
         implements LoginFragment.OnFragmentInteractionListener,
-        SearchResultsFragment.OnFragmentInteractionListener{
+        SearchResultsFragment.OnFragmentInteractionListener {
     public Context mContext;
     public static Bus bus = new Bus(ThreadEnforcer.ANY);
     SearchView mSearchView = null;
     SearchResultsFragment mSearchResultsFragment = null;
     LoginFragment mLoginFragment = null;
     private View mVideosView;
+    public String TAG = MainActivity.class.getSimpleName();
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_search:
-                FSM.transit(null);
+                Event.SearchTorrent searchTorrentEvent = new Event.SearchTorrent();
+                FSM.transit(searchTorrentEvent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -67,41 +70,45 @@ public class MainActivity
 
     private void InitializeFSM() {
         FSM.addStates(new String[]{
-                "Root","LoginPrompt","SearchResults"
+                "Root", "LoginPrompt", "SearchResults"
         });
 
-        new Transition("Root","","LoginPrompt")
+        new Transition("Root", "", "LoginPrompt")
                 .setAction(new Action() {
                     @Override
-                    public void run(Bundle data) {
+                    public void run(Object data) {
                         setupVideoListView();
                         setupLoginFragment();
                     }
                 });
 
-        new Transition("LoginPrompt","","SearchResults")
+        new Transition("LoginPrompt", "", "SearchResults")
                 .setAction(new Action() {
                     @Override
-                    public void run(Bundle data) {
-                        String query = "";
-                        if(data!=null)
-                            query = data.getString("query");
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        Runnable myRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                mVideosView.setVisibility(View.GONE);
-                            }
-                        };
-                        handler.post(myRunnable);
-                        StartSearch(query);
+                    public void run(Object data) {
+                        if (data == null) return;
+                        try {
+                            Event.SearchTorrent searchTorrent = (Event.SearchTorrent) data;
+                            if (searchTorrent == null) return;
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            Runnable myRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    mVideosView.setVisibility(View.GONE);
+                                }
+                            };
+                            handler.post(myRunnable);
+                            StartSearch(searchTorrent.query);
+                        } catch (ClassCastException e) {
+                            Log.e(TAG, "Invalid SearchTorrent object");
+                        }
                     }
                 });
 
-        new Transition("SearchResults","","LoginPrompt")
+        new Transition("SearchResults", "", "LoginPrompt")
                 .setAction(new Action() {
                     @Override
-                    public void run(Bundle data) {
+                    public void run(Object data) {
                         FragmentManager fm = getSupportFragmentManager();
                         FragmentTransaction transaction = fm.beginTransaction();
 
@@ -121,10 +128,14 @@ public class MainActivity
                 })
                 .setCondition(new Condition() {
                     @Override
-                    public boolean isGo(Bundle data) {
-                        if(data!=null) {
-                            if(data.getBoolean("backPressed"))
-                                return true;
+                    public boolean isGo(Object data) {
+                        if (data == null) return false;
+                        try {
+                            Event.BackPressed backPressed = (Event.BackPressed) data;
+                            if (backPressed == null) return false;
+                            return true;
+                        }catch (ClassCastException e){
+                            Log.e(TAG,"Invalid BackPressed object");
                         }
                         return false;
                     }
@@ -135,14 +146,13 @@ public class MainActivity
 
     private void setupVideoListView() {
         mVideosView = findViewById(R.id.Videos);
-        new VideoListPresenter(this,mVideosView);
+        new VideoListPresenter(this, mVideosView);
     }
 
     @Override
     public void onBackPressed() {
-        Bundle data = new Bundle();
-        data.putBoolean("backPressed",true);
-        FSM.transit(data);
+        Event.BackPressed backPressedEvent = new Event.BackPressed();
+        FSM.transit(backPressedEvent);
     }
 
     private void setupLoginFragment() {
