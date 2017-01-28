@@ -2,6 +2,7 @@ package com.baliyaan.android.login;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.view.View;
 
 import com.baliyaan.android.imdbtor.Event;
@@ -27,8 +28,9 @@ public class Services {
     private User mUser;
     private Bus mBus;
 
-    private Services(Context context, View fbLoginButton, Bus bus){
+    private Services(Context context, View fbLoginButton, @Nullable Bus bus){
         mUser = new User();
+        if(bus==null) bus = new Bus();
         mBus = bus;
         mBus.register(this);
         mFBServices = FBServices.getInstance(context,fbLoginButton,mUser,mBus);
