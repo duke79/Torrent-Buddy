@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.ListViewCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +21,7 @@ public class VideoListFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-
-    ListViewCompat mVideoList = null;
-    VideoListAdapter mVideoListAdapter = null;
-    ArrayList<String> mVideos = new ArrayList<>();
+    private VideoListPresenter mVideoListPresenter;
 
     public VideoListFragment() {
         // Required empty public constructor
@@ -58,31 +54,16 @@ public class VideoListFragment extends Fragment {
         }
     }
 
-    private void setupVideoList(View view) {
-        mVideoList = (ListViewCompat) view.findViewById(R.id.Videos);
-        mVideoListAdapter = new VideoListAdapter(getActivity(), mVideos);
-        mVideoList.setAdapter(mVideoListAdapter);
-    }
-
     public void OnVideosListUpdated(ArrayList<String> videos)
     {
-        if(mVideos==null)return;
-        if(mVideos.containsAll(videos))return;
-        mVideos.clear();
-        mVideos.addAll(videos);
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mVideoListAdapter.notifyDataSetChanged();
-            }
-        });
+        mVideoListPresenter.OnVideosListUpdated(videos);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_video_list, container, false);
-        setupVideoList(view);
+        mVideoListPresenter = new VideoListPresenter(getContext(),view);
         return view;
     }
 
