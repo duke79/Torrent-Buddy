@@ -1,6 +1,8 @@
-package com.baliyaan.android.imdbtor;
+package com.baliyaan.android.torrents;
 
 import android.content.Context;
+
+import com.baliyaan.android.imdbtor.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;

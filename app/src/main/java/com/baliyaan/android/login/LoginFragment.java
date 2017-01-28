@@ -1,4 +1,4 @@
-package com.baliyaan.android.imdbtor;
+package com.baliyaan.android.login;
 
 import android.app.Activity;
 import android.content.Context;
@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.baliyaan.android.imdbtor.R;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;

@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baliyaan.android.torrents.Torrent;
+
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;

@@ -17,6 +17,9 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.baliyaan.android.torrents.Torrent;
+import com.baliyaan.android.torrents.TorrentProviderServices;
+
 import java.util.ArrayList;
 
 

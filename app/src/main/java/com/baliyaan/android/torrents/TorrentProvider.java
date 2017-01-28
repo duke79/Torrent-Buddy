@@ -1,4 +1,4 @@
-package com.baliyaan.android.imdbtor;
+package com.baliyaan.android.torrents;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
