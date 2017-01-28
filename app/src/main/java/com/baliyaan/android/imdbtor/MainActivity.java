@@ -18,6 +18,7 @@ import com.baliyaan.android.afsm.FSM;
 import com.baliyaan.android.afsm.Transition;
 import com.baliyaan.android.login.LoginFragment;
 import com.google.firebase.database.FirebaseDatabase;
+import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
 
@@ -27,6 +28,7 @@ public class MainActivity
         SearchResultsFragment.OnFragmentInteractionListener,
         VideoListFragment.OnFragmentInteractionListener {
     public Context mContext;
+    public static Bus bus = new Bus();
     SearchView mSearchView = null;
     SearchResultsFragment mSearchResultsFragment = null;
     LoginFragment mLoginFragment = null;
@@ -171,7 +173,8 @@ public class MainActivity
     @Override
     public void onUserInfoUpdated(ArrayList<String> videosList) {
         if (null == videosList) return;
-        if (videosList.size() > 0)
-            mVideoListFragment.OnVideosListUpdated(videosList);
+        if (videosList.size() > 0) {
+            bus.post(videosList);
+        }
     }
 }

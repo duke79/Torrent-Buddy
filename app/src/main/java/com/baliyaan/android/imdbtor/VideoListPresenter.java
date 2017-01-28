@@ -6,6 +6,8 @@ import android.os.Looper;
 import android.support.v7.widget.ListViewCompat;
 import android.view.View;
 
+import com.squareup.otto.Subscribe;
+
 import java.util.ArrayList;
 
 /**
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 
 public class VideoListPresenter {
     private final Context mContext;
+    private final String TAG = "VideoListPresenter";
     ListViewCompat mVideoList = null;
     VideoListAdapter mVideoListAdapter = null;
     ArrayList<String> mVideos = new ArrayList<>();
@@ -21,6 +24,7 @@ public class VideoListPresenter {
     public VideoListPresenter(Context context, View view) {
         mContext = context;
         setupVideoList(view);
+        MainActivity.bus.register(this);
     }
 
     public void setupVideoList(View view) {
@@ -29,6 +33,7 @@ public class VideoListPresenter {
         mVideoList.setAdapter(mVideoListAdapter);
     }
 
+    @Subscribe
     public void OnVideosListUpdated(ArrayList<String> videos) {
         if (mVideos == null) return;
         if (mVideos.containsAll(videos)) return;
