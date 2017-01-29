@@ -3,9 +3,8 @@ package com.baliyaan.android.login;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
-import android.view.View;
 
-import com.baliyaan.android.imdbtor.Event;
+import com.facebook.login.widget.LoginButton;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -16,38 +15,38 @@ import com.squareup.otto.Subscribe;
 public class Services {
     // Singleton
     private static Services instance = null;
-    public static Services getInstance(Context context, View fbLoginButton,Bus bus){
+    public static Services getInstance(Context context, LoginButton fbLoginButton,Bus bus){
         if(instance==null){
             instance = new Services(context,fbLoginButton,bus);
         }
         return instance;
     }
 
-    private FBServices mFBServices;
-    private FirebaseServices mFirebaseServices;
+    private FB mFB;
+    private Firebase mFirebase;
     private User mUser;
     private Bus mBus;
 
-    private Services(Context context, View fbLoginButton, @Nullable Bus bus){
+    private Services(Context context, LoginButton fbLoginButton, @Nullable Bus bus){
         mUser = new User();
         if(bus==null) bus = new Bus();
         mBus = bus;
         mBus.register(this);
-        mFBServices = FBServices.getInstance(context,fbLoginButton,mUser,mBus);
-        mFirebaseServices = FirebaseServices.getInstance(context,mUser,mBus);
+        mFB = FB.getInstance(context,fbLoginButton,mUser,mBus);
+        mFirebase = Firebase.getInstance(context,mUser,mBus);
     }
 
     @Subscribe
-    public void OnFBLogin(Event.FacebookEvent.Success event){
+    public void OnFBLogin(Event.Facebook.Login.Success event){
         firebase().integrateWithFB(event.token);
     }
 
-    public FBServices fb(){
-        return mFBServices;
+    public FB fb(){
+        return mFB;
     }
 
-    public FirebaseServices firebase(){
-        return mFirebaseServices;
+    public Firebase firebase(){
+        return mFirebase;
     }
 
     public User user(){
@@ -56,5 +55,15 @@ public class Services {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         fb().onActivityResult(requestCode,resultCode,data);
+    }
+
+    @Subscribe
+    public void OnFBDataReturned(Event.Facebook.DataReturned event){
+        firebase().UpdateFirebaseServer();
+        if(mUser.GetFBWantsToWatchList().size()>0) {
+            Event.User.VideoListUpdated videoListEvent = new Event.User.VideoListUpdated();
+            videoListEvent.videos = mUser.GetFBWantsToWatchList();
+            mBus.post(videoListEvent);
+        }
     }
 }

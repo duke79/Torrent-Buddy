@@ -17,16 +17,4 @@ public class Event {
         public String query = "";
     }
 
-    public static class FacebookEvent extends Event{
-        public static class Success extends FacebookEvent{
-            public AccessToken token = null;
-        }
-        public static class Cancel extends FacebookEvent{
-        }
-        public static class Error extends FacebookEvent{
-        }
-    }
-
-    public static class StoreOnFirebase extends Event{
-    }
 }

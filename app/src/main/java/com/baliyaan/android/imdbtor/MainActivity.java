@@ -20,6 +20,7 @@ import com.baliyaan.android.afsm.Condition;
 import com.baliyaan.android.afsm.FSM;
 import com.baliyaan.android.afsm.Transition;
 import com.baliyaan.android.login.Services;
+import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
@@ -36,7 +37,7 @@ public class MainActivity
 
     SearchResultsFragment mSearchResultsFragment = null;
     private View mVideosView = null;
-    private View mFBLoginView = null;
+    private LoginButton mFBLoginView = null;
     private Services mLoginServices = null;
     private View mHomePage = null;
 
@@ -118,8 +119,8 @@ public class MainActivity
             public boolean isGo(Object data) {
                 if (data == null) return false;
                 try {
-                    Event.SearchTorrent backPressed = (Event.SearchTorrent) data;
-                    if (backPressed == null) return false;
+                    Event.SearchTorrent searchTorrent = (Event.SearchTorrent) data;
+                    if (searchTorrent == null) return false;
                     return true;
                 }catch (ClassCastException e){
                     Log.e(TAG,"Invalid SearchTorrent object");
@@ -167,7 +168,7 @@ public class MainActivity
     }
 
     @Subscribe
-    public void OnEvent(Event event){
+    public void OnEvent(Object event){
         FSM.transit(event);
     }
 
@@ -183,7 +184,7 @@ public class MainActivity
     }
 
     private void setupLogin() {
-        mFBLoginView = findViewById(R.id.fb_login_button);
+        mFBLoginView = (LoginButton) findViewById(R.id.fb_login_button);
         mLoginServices = Services.getInstance(mContext,mFBLoginView,bus);
     }
 

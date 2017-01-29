@@ -7,11 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
 
-import com.baliyaan.android.imdbtor.Event;
-import com.baliyaan.android.imdbtor.R;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -33,16 +29,17 @@ import org.json.JSONObject;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+
 /**
  * Created by Pulkit Singh on 1/28/2017.
  */
 
-public class FBServices {
+public class FB {
     // Singleton
-    private static FBServices instance = null;
-    public static FBServices getInstance(Context context, View fbLoginButton, User user, Bus bus){
+    private static FB instance = null;
+    public static FB getInstance(Context context, LoginButton fbLoginButton, User user, Bus bus){
         if(instance==null){
-            instance = new FBServices(context,fbLoginButton,user,bus);
+            instance = new FB(context,fbLoginButton,user,bus);
         }
         return instance;
     }
@@ -50,12 +47,12 @@ public class FBServices {
     private User mUser;
     private Context mContext;
     private AccessToken mAccessToken;
-    private static final String TAG = FBServices.class.getSimpleName();
+    private static final String TAG = FB.class.getSimpleName();
     private CallbackManager mCallbackManager;
     private Bus mBus;
 
 
-    private FBServices(Context context, View fbLoginButton, User user, Bus bus) {
+    private FB(Context context, LoginButton fbLoginButton, User user, Bus bus) {
         mContext = context;
         mUser = user;
         mBus = bus;
@@ -73,15 +70,15 @@ public class FBServices {
         if (profile != null) {
             Log.d(TAG, "Logged in User: " + profile.getFirstName() + " " + profile.getLastName());
         } else {
-            ShowHashKey(mContext);
+            ShowHashKey(mContext,"\"com.baliyaan.android.imdbtor\"");
         }
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;
     }
 
-    public void ShowHashKey(Context context) {
+    public void ShowHashKey(Context context, String packageStr) {
         try {
-            PackageInfo info = context.getPackageManager().getPackageInfo("com.baliyaan.android.imdbtor",
+            PackageInfo info = context.getPackageManager().getPackageInfo(packageStr,
                     PackageManager.GET_SIGNATURES);
             for (android.content.pm.Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
@@ -103,8 +100,7 @@ public class FBServices {
         return mAccessToken;
     }
 
-    private void InitializeFBLoginButton(View view) {
-        final LoginButton loginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
+    private void InitializeFBLoginButton(LoginButton loginButton) {
         loginButton.setReadPermissions("email", "public_profile", "user_actions.video", "user_friends");
 
         mCallbackManager = CallbackManager.Factory.create();
@@ -113,7 +109,7 @@ public class FBServices {
             public void onSuccess(LoginResult loginResult) {
                 OnFBLoginSuccess(loginResult);
                 // Publish
-                Event.FacebookEvent.Success event = new Event.FacebookEvent.Success();
+                Event.Facebook.Login.Success event = new Event.Facebook.Login.Success();
                 event.token = loginResult.getAccessToken();
                 mBus.post(event);
             }
@@ -122,14 +118,14 @@ public class FBServices {
             public void onCancel() {
                 OnFBLoginCancel();
                 // Publish
-                mBus.post(new Event.FacebookEvent.Cancel());
+                mBus.post(new Event.Facebook.Login.Cancel());
             }
 
             @Override
             public void onError(FacebookException error) {
                 OnFBLoginError(error);
                 // Publish
-                mBus.post(new Event.FacebookEvent.Error());
+                mBus.post(new Event.Facebook.Login.Error());
             }
         });
     }
@@ -145,7 +141,6 @@ public class FBServices {
 
     private void OnFBLoginError(FacebookException error) {
         Log.d(TAG, "facebook:onError", error);
-        Toast.makeText(mContext, R.string.FBLoginError, Toast.LENGTH_SHORT).show();
     }
 
     private void RequestFBBasicUserInfo() {
@@ -184,8 +179,9 @@ public class FBServices {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
         //Publish
-        Event.StoreOnFirebase event = new Event.StoreOnFirebase();
+        Event.Facebook.DataReturned.UserInfo event = new Event.Facebook.DataReturned.UserInfo();
         mBus.post(event);
     }
 
@@ -221,7 +217,8 @@ public class FBServices {
             e.printStackTrace();
         }
         //Publish
-        Event.StoreOnFirebase event = new Event.StoreOnFirebase();
+        Event.Facebook.DataReturned.WantsToWatchList event = new Event.Facebook.DataReturned.WantsToWatchList();
+        event.videos = mUser.GetFBWantsToWatchList();
         mBus.post(event);
     }
 
@@ -252,7 +249,7 @@ public class FBServices {
             e.printStackTrace();
         }
         //Publish
-        Event.StoreOnFirebase event = new Event.StoreOnFirebase();
+        com.baliyaan.android.login.Event.Facebook.DataReturned.FriendsWhoUseThisApp event = new com.baliyaan.android.login.Event.Facebook.DataReturned.FriendsWhoUseThisApp();
         mBus.post(event);
     }
 

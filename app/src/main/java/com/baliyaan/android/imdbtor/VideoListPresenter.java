@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.support.v7.widget.ListViewCompat;
 import android.view.View;
 
+import com.baliyaan.android.login.Event;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -41,8 +42,10 @@ public class VideoListPresenter {
     }
 
     @Subscribe
-    public void OnVideosListUpdated(ArrayList<String> videos) {
-        if (mVideos == null) return;
+    public void OnVideosListUpdated(Event.User.VideoListUpdated event) {
+        if(event.videos==null) return;
+        if(event.videos.size()==0) return;
+        ArrayList<String> videos = event.videos;
         if (mVideos.containsAll(videos)) return;
         mVideos.clear();
         mVideos.addAll(videos);

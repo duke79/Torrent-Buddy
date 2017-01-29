@@ -6,8 +6,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.baliyaan.android.imdbtor.Event;
-import com.baliyaan.android.imdbtor.MainActivity;
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenTracker;
 import com.facebook.Profile;
@@ -21,32 +19,31 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Bus;
-import com.squareup.otto.Subscribe;
 
 /**
  * Created by Pulkit Singh on 1/28/2017.
  */
 
-public class FirebaseServices {
+public class Firebase {
     // Singleton
-    private static FirebaseServices instance = null;
-    public static FirebaseServices getInstance(Context context, User user, Bus bus){
+    private static Firebase instance = null;
+    public static Firebase getInstance(Context context, User user, Bus bus){
         if(instance==null){
-            instance = new FirebaseServices(context,user,bus);
+            instance = new Firebase(context,user,bus);
         }
         return instance;
     }
 
     User mUser;
     private Bus mBus = null;
-    private static final String TAG = FirebaseServices.class.getSimpleName();
+    private static final String TAG = Firebase.class.getSimpleName();
 
     Context mContext;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private DatabaseReference mDatabase;
 
-    private FirebaseServices(Context context, User user, Bus bus){
+    private Firebase(Context context, User user, Bus bus){
         mContext = context;
         mUser = user;
         mBus = bus;
@@ -98,15 +95,10 @@ public class FirebaseServices {
         if (profile == null) return;
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken == null) return;
-        StoreOnFirebase();
+        UpdateFirebaseServer();
     }
 
-    @Subscribe
-    public void StoreOnFirebase(Event.StoreOnFirebase event){
-        StoreOnFirebase();
-    }
-
-    private void StoreOnFirebase() {
+    protected void UpdateFirebaseServer() {
         if(mUser==null) return;
 
         DatabaseReference users = FirebaseDatabase.getInstance().getReference("users");
@@ -120,9 +112,6 @@ public class FirebaseServices {
 
         // pushing user to 'users' node using the userId
         users.child(userId).setValue(mUser);
-
-        if(mUser.GetFBWantsToWatchList().size()>0)
-            MainActivity.bus.post(mUser.GetFBWantsToWatchList());
     }
 
     private void OnFirebaseLogOut() {
