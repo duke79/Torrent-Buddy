@@ -79,6 +79,10 @@ public class SearchResultsPresenter {
         mSearchView = (SearchView) ((Activity)mContext).findViewById(R.id.SearchBox);
         //mSearchView.setFocusable(true);
         mSearchView.setIconified(false);
+
+        // Prevent Auto-Popping soft keyboard
+        mSearchView.clearFocus();
+
         mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(final String query) {
