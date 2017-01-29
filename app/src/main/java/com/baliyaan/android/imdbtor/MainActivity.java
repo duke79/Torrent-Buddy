@@ -6,9 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.View;
 
@@ -37,6 +36,7 @@ public class MainActivity
     private LoginButton mFBLoginView = null;
     private Services mLoginServices = null;
     private View mHomePage = null;
+    private View mSearchTorrentsPage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,7 @@ public class MainActivity
                         setupLogin();
                         setupTopBar();
                         mHomePage = findViewById(R.id.HomePage);
+                        mSearchTorrentsPage = findViewById(R.id.SearchTorrentsPage);
                     }
                 });
 
@@ -83,6 +84,7 @@ public class MainActivity
                                     //mFBLoginView.setVisibility(View.GONE);
                                     //mVideosView.setVisibility(View.GONE);
                                     mHomePage.setVisibility(View.GONE);
+                                    mSearchTorrentsPage.setVisibility(View.VISIBLE);
                                 }
                             };
                             handler.post(myRunnable);
@@ -111,11 +113,6 @@ public class MainActivity
                 .setAction(new Action() {
                     @Override
                     public void run(Object data) {
-
-                        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        if (mSearchResultsFragment != null)
-                          transaction.remove(mSearchResultsFragment).commit();
-
                         Handler handler = new Handler(Looper.getMainLooper());
                         Runnable myRunnable = new Runnable() {
                             @Override
@@ -123,6 +120,7 @@ public class MainActivity
                                 //mFBLoginView.setVisibility(View.VISIBLE);
                                 //mVideosView.setVisibility(View.VISIBLE);
                                 mHomePage.setVisibility(View.VISIBLE);
+                                mSearchTorrentsPage.setVisibility(View.GONE);
                             }
                         };
                         handler.post(myRunnable);
@@ -179,16 +177,8 @@ public class MainActivity
     }
 
     public void StartSearch(String query) {
-        if (mSearchResultsFragment == null) {
-            mSearchResultsFragment = new SearchResultsFragment();
-        }
-        mSearchResultsFragment.SearchOnStart(query);
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        transaction.add(R.id.SearchResultsFragmentContainer, mSearchResultsFragment);
-        //transaction.addToBackStack(null);
-        transaction.commit();
-        //fm.executePendingTransactions();
+        SearchView searchView = (SearchView) mSearchTorrentsPage.findViewById(R.id.SearchBox);
+        //searchView.setQuery(query,false);
     }
 
     @Override
