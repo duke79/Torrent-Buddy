@@ -43,12 +43,23 @@ public class SearchResultsPresenter {
         Runnable myRunnable = new Runnable() {
             @Override
             public void run() {
+                setupBackIcon();
                 setupSearchView();
                 setupResultsList();
                 configureVisibilityChange();
             }
         };
         handler.post(myRunnable);
+    }
+
+    private void setupBackIcon() {
+        View backIcon = ((Activity)mContext).findViewById(R.id.back_icon);
+        backIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((Activity) mContext).onBackPressed();
+            }
+        });
     }
 
     private void configureVisibilityChange() {
