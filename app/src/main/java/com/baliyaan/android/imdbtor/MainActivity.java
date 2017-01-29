@@ -2,7 +2,6 @@ package com.baliyaan.android.imdbtor;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,15 +22,13 @@ import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
 
 public class MainActivity
-        extends AppCompatActivity
-        implements SearchResultsFragment.OnFragmentInteractionListener {
+        extends AppCompatActivity{
 
     public Context mContext;
     public String TAG = MainActivity.class.getSimpleName();
 
     public static Bus bus = new Bus(ThreadEnforcer.ANY);
 
-    SearchResultsFragment mSearchResultsFragment = null;
     private View mVideosView = null;
     private LoginButton mFBLoginView = null;
     private Services mLoginServices = null;
@@ -64,8 +61,8 @@ public class MainActivity
                         setupVideoListView();
                         setupLogin();
                         setupTopBar();
+                        setupSearchResultsView();
                         mHomePage = findViewById(R.id.HomePage);
-                        mSearchTorrentsPage = findViewById(R.id.SearchTorrentsPage);
                     }
                 });
 
@@ -143,6 +140,11 @@ public class MainActivity
         FSM.transit(null);
     }
 
+    private void setupSearchResultsView() {
+        mSearchTorrentsPage = findViewById(R.id.SearchTorrentsPage);
+        new SearchResultsPresenter(this, mVideosView,bus);
+    }
+
 
     @Subscribe
     public void OnEvent(Object event){
@@ -176,19 +178,21 @@ public class MainActivity
         });
     }
 
-    public void StartSearch(String query) {
-        SearchView searchView = (SearchView) mSearchTorrentsPage.findViewById(R.id.SearchBox);
-        //searchView.setQuery(query,false);
+    public void StartSearch(final String query) {
+        final SearchView searchView = (SearchView) mSearchTorrentsPage.findViewById(R.id.SearchBox);
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                searchView.setQuery(query,true);
+            }
+        };
+        handler.post(myRunnable);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         mLoginServices.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        // Required only for communication among fragments
     }
 }
