@@ -10,9 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.baliyaan.android.afsm.Action;
@@ -42,26 +39,6 @@ public class MainActivity
     private View mHomePage = null;
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_search:
-                Event.SearchTorrent event = new Event.SearchTorrent();
-                bus.post(event);
-                //FSM.transit(searchTorrentEvent);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -86,6 +63,7 @@ public class MainActivity
                     public void run(Object data) {
                         setupVideoListView();
                         setupLogin();
+                        setupTopBar();
                         mHomePage = findViewById(R.id.HomePage);
                     }
                 });
@@ -167,14 +145,10 @@ public class MainActivity
         FSM.transit(null);
     }
 
+
     @Subscribe
     public void OnEvent(Object event){
         FSM.transit(event);
-    }
-
-    private void setupVideoListView() {
-        mVideosView = findViewById(R.id.Videos);
-        new VideoListPresenter(this, mVideosView);
     }
 
     @Override
@@ -187,6 +161,21 @@ public class MainActivity
         mFBLoginView = (LoginButton) findViewById(R.id.fb_login_button);
         String packageStr = "com.baliyaan.android.imdbtor";
         mLoginServices = Services.getInstance(mContext,mFBLoginView,bus,packageStr);
+    }
+
+    private void setupVideoListView() {
+        mVideosView = findViewById(R.id.Videos);
+        new VideoListPresenter(this, mVideosView);
+    }
+
+    private void setupTopBar() {
+        View searchIcon = findViewById(R.id.menu_search);
+        searchIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                bus.post(new Event.SearchTorrent());
+            }
+        });
     }
 
     public void StartSearch(String query) {

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -211,14 +210,14 @@ public class SearchResultsFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
-        ((AppCompatActivity)mActivity).getSupportActionBar().hide();
+        //((AppCompatActivity)mActivity).getSupportActionBar().hide();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        ((AppCompatActivity)mActivity).getSupportActionBar().show();
+        //((AppCompatActivity)mActivity).getSupportActionBar().show();
         mActivity = null;
     }
 
