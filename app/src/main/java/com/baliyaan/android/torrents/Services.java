@@ -1,9 +1,5 @@
 package com.baliyaan.android.torrents;
 
-import android.content.Context;
-
-import com.baliyaan.android.imdbtor.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,11 +11,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class Services {
-    public static ArrayList<Provider> GetProvidersList(Context context) {
+    public static ArrayList<Provider> GetProvidersList(InputStream isMeta) {
         ArrayList<Provider> providers = new ArrayList<>();
 
-        InputStream inputStream = context.getResources().openRawResource(R.raw.meta);
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(isMeta));
         StringBuilder stringBuilder = new StringBuilder();
         String line;
         try {
@@ -68,10 +63,10 @@ public class Services {
         return providers;
     }
 
-    public static ArrayList<Torrent> GetTorrents(Context context,String q) {
+    public static ArrayList<Torrent> GetTorrents(String q, InputStream isMeta) {
         ArrayList<Torrent> torrents = new ArrayList<>();
 
-        ArrayList<Provider> providers = GetProvidersList(context);
+        ArrayList<Provider> providers = GetProvidersList(isMeta);
         for(int i=0;i<providers.size();i++)
         {
             torrents.addAll(providers.get(i).GetTorrents(q));
