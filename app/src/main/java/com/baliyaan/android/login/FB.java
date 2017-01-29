@@ -37,9 +37,9 @@ import java.security.NoSuchAlgorithmException;
 public class FB {
     // Singleton
     private static FB instance = null;
-    public static FB getInstance(Context context, LoginButton fbLoginButton, User user, Bus bus){
+    public static FB getInstance(Context context, LoginButton fbLoginButton, User user, Bus bus, String packageStr){
         if(instance==null){
-            instance = new FB(context,fbLoginButton,user,bus);
+            instance = new FB(context,fbLoginButton,user,bus,packageStr);
         }
         return instance;
     }
@@ -52,25 +52,25 @@ public class FB {
     private Bus mBus;
 
 
-    private FB(Context context, LoginButton fbLoginButton, User user, Bus bus) {
+    private FB(Context context, LoginButton fbLoginButton, User user, Bus bus, String packageStr) {
         mContext = context;
         mUser = user;
         mBus = bus;
 
         FacebookSdk.sdkInitialize(context);
         InitializeFBLoginButton(fbLoginButton);
-        IsFBLoggedIn();
+        IsFBLoggedIn(packageStr);
         RequestFBBasicUserInfo();
         RequestFBWantsToWatchList();
         RequestFBFriendsWhoUseThisApp();
     }
 
-    public boolean IsFBLoggedIn() {
+    public boolean IsFBLoggedIn(String packageStr) {
         Profile profile = Profile.getCurrentProfile();
         if (profile != null) {
             Log.d(TAG, "Logged in User: " + profile.getFirstName() + " " + profile.getLastName());
         } else {
-            ShowHashKey(mContext,"\"com.baliyaan.android.imdbtor\"");
+            ShowHashKey(mContext,packageStr);
         }
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         return accessToken != null;

@@ -2,7 +2,6 @@ package com.baliyaan.android.login;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.Nullable;
 
 import com.facebook.login.widget.LoginButton;
 import com.squareup.otto.Bus;
@@ -15,9 +14,9 @@ import com.squareup.otto.Subscribe;
 public class Services {
     // Singleton
     private static Services instance = null;
-    public static Services getInstance(Context context, LoginButton fbLoginButton,Bus bus){
+    public static Services getInstance(Context context, LoginButton fbLoginButton,Bus bus, String packageStr){
         if(instance==null){
-            instance = new Services(context,fbLoginButton,bus);
+            instance = new Services(context,fbLoginButton,bus,packageStr);
         }
         return instance;
     }
@@ -27,12 +26,12 @@ public class Services {
     private User mUser;
     private Bus mBus;
 
-    private Services(Context context, LoginButton fbLoginButton, @Nullable Bus bus){
+    private Services(Context context, LoginButton fbLoginButton, Bus bus, String packageStr){
         mUser = new User();
         if(bus==null) bus = new Bus();
         mBus = bus;
         mBus.register(this);
-        mFB = FB.getInstance(context,fbLoginButton,mUser,mBus);
+        mFB = FB.getInstance(context,fbLoginButton,mUser,mBus,packageStr);
         mFirebase = Firebase.getInstance(context,mUser,mBus);
     }
 

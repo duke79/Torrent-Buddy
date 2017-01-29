@@ -185,7 +185,8 @@ public class MainActivity
 
     private void setupLogin() {
         mFBLoginView = (LoginButton) findViewById(R.id.fb_login_button);
-        mLoginServices = Services.getInstance(mContext,mFBLoginView,bus);
+        String packageStr = "com.baliyaan.android.imdbtor";
+        mLoginServices = Services.getInstance(mContext,mFBLoginView,bus,packageStr);
     }
 
     public void StartSearch(String query) {
