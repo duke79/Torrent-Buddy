@@ -1,3 +1,53 @@
+// Example of meta.json which is used as input stream
+/*
+{
+  "providers": [
+    {
+      "name": "ThePirateBay",
+      "searchUrl":"https://thepiratebay.org/search/%s/0/99/0",
+      "icon":"https://thepiratebay.org/favicon.ico",
+      "cssSelectors": {
+        "magnets": "#searchResult > tbody:nth-child(2) > tr > td:nth-child(2) > a:nth-child(2)",
+        "titles": "#searchResult > tbody:nth-child(2) > tr > td:nth-child(2) > div:nth-child(1) > a:nth-child(1)",
+        "timestamps": "#searchResult > tbody:nth-child(2) > tr > td:nth-child(2) > font:nth-child(6)",
+        "sizes": "#searchResult > tbody:nth-child(2) > tr > td:nth-child(2) > font:nth-child(6)",
+        "seeds": "#searchResult > tbody:nth-child(2) > tr > td:nth-child(3)",
+        "leeches": "#searchResult > tbody:nth-child(2) > tr > td:nth-child(4)",
+        "URLs": "#searchResult > tbody:nth-child(2) > tr > td:nth-child(2) > div:nth-child(1) > a:nth-child(1)"
+      }
+    },
+    {
+      "name": "ExtraTorrent",
+      "searchUrl":"https://extratorrent.cc/search/?search=%s&s_cat=&pp=&srt=seeds&order=desc",
+      "icon":"https://extratorrent.cc/favicon.ico",
+      "cssSelectors": {
+        "magnets": "#e_content > table.tl > tbody > tr:nth-child(2) > td:nth-child(1) > a:nth-child(2)",
+        "titles": "#e_content > table.tl > tbody > tr > td.tli > a",
+        "timestamps": "#e_content > table.tl > tbody > tr > td:nth-child(4)",
+        "sizes": "#e_content > table.tl > tbody > tr > td:nth-child(5)",
+        "seeds": "#e_content > table.tl > tbody > tr > td.sy",
+        "leeches": "#e_content > table.tl > tbody > tr > td.ly",
+        "URLs": "#e_content > table.tl > tbody > tr > td.tli > a"
+      }
+    },
+    {
+      "name": "BTSone",
+      "searchUrl":"http://www.btsone.cc/results_.php?q=%s",
+      "icon":"http://www.btsone.cc/favicon.ico",
+      "cssSelectors": {
+        "magnets": "#e_content > table.tl > tbody > tr:nth-child(2) > td:nth-child(1) > a:nth-child(2)",
+        "titles": "#e_content > table.tl > tbody > tr > td.tli > a",
+        "timestamps": "#e_content > table.tl > tbody > tr > td:nth-child(4)",
+        "sizes": "#e_content > table.tl > tbody > tr > td:nth-child(5)",
+        "seeds": "#e_content > table.tl > tbody > tr > td.sy",
+        "leeches": "#e_content > table.tl > tbody > tr > td.ly",
+        "URLs": "#e_content > table.tl > tbody > tr > td.tli > a"
+      }
+    }
+  ]
+}
+ */
+
 package com.baliyaan.android.torrents;
 
 import org.json.JSONArray;
