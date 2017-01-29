@@ -106,6 +106,21 @@ public class MainActivity
             }
         });
 
+        Condition backPressed = new Condition() {
+            @Override
+            public boolean isGo(Object data) {
+                if (data == null) return false;
+                try {
+                    Event.BackPressed backPressed = (Event.BackPressed) data;
+                    if (backPressed == null) return false;
+                    return true;
+                }catch (ClassCastException e){
+                    Log.e(TAG,"Invalid BackPressed object");
+                }
+                return false;
+            }
+        };
+
         new Transition("SearchResults", "", "LoginPrompt")
                 .setAction(new Action() {
                     @Override
@@ -123,20 +138,17 @@ public class MainActivity
                         handler.post(myRunnable);
                     }
                 })
-                .setCondition(new Condition() {
+                .setCondition(backPressed);
+
+        new Transition("LoginPrompt","","Exit")
+                .setAction(new Action() {
                     @Override
-                    public boolean isGo(Object data) {
-                        if (data == null) return false;
-                        try {
-                            Event.BackPressed backPressed = (Event.BackPressed) data;
-                            if (backPressed == null) return false;
-                            return true;
-                        }catch (ClassCastException e){
-                            Log.e(TAG,"Invalid BackPressed object");
-                        }
-                        return false;
+                    public void run(Object data) {
+                        System.exit(0);
                     }
-                });
+                })
+                .setCondition(backPressed);
+
         FSM.transit(null);
     }
 
