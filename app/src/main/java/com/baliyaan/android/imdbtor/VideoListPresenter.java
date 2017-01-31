@@ -30,7 +30,7 @@ public class VideoListPresenter {
 
     public void setupVideoList(View view) {
         mVideoList = (ListViewCompat) view;//(ListViewCompat) view.findViewById(R.id.Videos);
-        mVideoListAdapter = new VideoListAdapter(mContext, mVideos);
+        mVideoListAdapter = new VideoListAdapter(mContext, (ArrayList<Object>)(ArrayList<?>)mVideos, R.layout.video);
         Handler handler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
             @Override

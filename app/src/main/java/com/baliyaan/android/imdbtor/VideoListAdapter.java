@@ -1,31 +1,27 @@
 package com.baliyaan.android.imdbtor;
 
-import android.app.Activity;
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.baliyaan.android.uicomponents.ListAdapter;
 
-import static java.lang.Boolean.TRUE;
+import java.util.ArrayList;
 
 /**
  * Created by Pulkit Singh on 1/1/2017.
  */
 
-public class VideoListAdapter extends BaseAdapter{
-    Context mContext = null;
-    ArrayList<String> mVideos = null;
-    Boolean mAnimate = TRUE;
+public class VideoListAdapter extends ListAdapter{
 
-    static class ResultsViewHolder{
+
+    public VideoListAdapter(Context context, ArrayList<Object> itemsList, int itemLayoutID) {
+        super(context, itemsList, itemLayoutID);
+    }
+
+    static private class ResultsViewHolder{
         public TextView title;
         public TextView category;
         public TextView size;
@@ -36,62 +32,28 @@ public class VideoListAdapter extends BaseAdapter{
         public TextView provider;
     }
 
-    public VideoListAdapter(Context context, ArrayList<String> iVideos)
-    {
-        mContext = context;
-        mVideos = iVideos;
+    @Override
+    protected Object createViewHolder(int position, View view) {
+        ResultsViewHolder viewHolder = new ResultsViewHolder();
+        viewHolder.title = (TextView) view.findViewById(R.id.video_title);
+        viewHolder.title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int id = v.getId();
+                String videoTitle = (String) itemsList().get(id);
+                Toast.makeText(context(),videoTitle,Toast.LENGTH_LONG).show();
+                // Start search
+                Event.SearchTorrent searchTorrentEvent = new Event.SearchTorrent();
+                searchTorrentEvent.query = videoTitle;
+                MainActivity.bus.post(searchTorrentEvent);
+            }
+        });
+        return viewHolder;
     }
 
     @Override
-    public int getCount() {
-        int count = 0;
-        if(null != mVideos)
-            count = mVideos.size();
-        return count;
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return mVideos.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return 0;
-    }
-
-    @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
-        View resultView = convertView;
-        if(resultView == null) {
-            LayoutInflater layoutInflater = ((Activity)mContext).getLayoutInflater();
-            resultView = layoutInflater.inflate(R.layout.video, parent, false);
-            ResultsViewHolder viewHolder = new ResultsViewHolder();
-            viewHolder.title = (TextView) resultView.findViewById(R.id.video_title);
-            viewHolder.title.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int id = v.getId();
-                    String videoTitle = mVideos.get(id);
-                    Toast.makeText(mContext,videoTitle,Toast.LENGTH_LONG).show();
-                    // Start search
-                    Event.SearchTorrent searchTorrentEvent = new Event.SearchTorrent();
-                    searchTorrentEvent.query = videoTitle;
-                    MainActivity.bus.post(searchTorrentEvent);
-
-                }
-            });
-            resultView.setTag(viewHolder);
-        }
-
-        final ResultsViewHolder viewHolder = (ResultsViewHolder) resultView.getTag();
-        viewHolder.title.setText(mVideos.get(position));
-        viewHolder.title.setId(position);
-        if(mAnimate == true)
-        {
-            Animation animation = AnimationUtils.loadAnimation(mContext,android.R.anim.slide_in_left);
-            resultView.startAnimation(animation);
-        }
-        return resultView;
+    protected void setViewHolderParams(int position, Object holder) {
+        ((ResultsViewHolder)holder).title.setText((CharSequence) itemsList().get(position));
+        ((ResultsViewHolder)holder).title.setId(position);
     }
 }

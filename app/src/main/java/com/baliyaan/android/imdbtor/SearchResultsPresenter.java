@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.support.v7.widget.ListViewCompat;
 import android.support.v7.widget.SearchView;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
@@ -63,24 +64,36 @@ public class SearchResultsPresenter {
     }
 
     private void configureVisibilityChange() {
-        mSearchResultsPage.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+        mSearchResultsPage.setTag(mSearchResultsPage.getVisibility());
+        mSearchResultsPage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void onSystemUiVisibilityChange(int i) {
-                if(mQuery!=null)
+            public void onGlobalLayout() {
+                Toast.makeText(mContext,"Layout changed",Toast.LENGTH_SHORT).show();
+                int newVis = mSearchResultsPage.getVisibility();
+                if((int)mSearchResultsPage.getTag() != newVis)
                 {
-                    mQuery="";
-                    mSearchView.setQuery(mQuery,true);
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    Runnable myRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            if(mTorrents!=null) {
-                                mTorrents.clear();
-                                mSearchResultsAdapter.notifyDataSetChanged();
-                            }
+                    Toast.makeText(mContext,"SearchResults Visibility changed",Toast.LENGTH_SHORT).show();
+                    if(mSearchResultsPage.getVisibility()==View.GONE)
+                    {
+                        Toast.makeText(mContext,"SearchResults GONE",Toast.LENGTH_SHORT).show();
+                        mSearchResultsPage.setTag(mSearchResultsPage.getVisibility());
+                        if(mQuery!=null)
+                        {
+                            mQuery="";
+                            mSearchView.setQuery(mQuery,true);
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            Runnable myRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    if(mTorrents!=null) {
+                                        mTorrents.clear();
+                                        mSearchResultsAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                            };
+                            handler.post(myRunnable);
                         }
-                    };
-                    handler.post(myRunnable);
+                    }
                 }
             }
         });
@@ -112,7 +125,7 @@ public class SearchResultsPresenter {
 
     public void setupResultsList() {
         mSearchResults = (ListViewCompat) ((Activity)mContext).findViewById(R.id.Results);
-        mSearchResultsAdapter = new ResultListAdapter(mContext, mTorrents);
+        mSearchResultsAdapter = new ResultListAdapter(mContext, (ArrayList<Object>)(ArrayList) mTorrents,R.layout.torrent_result);
         mSearchResults.setAdapter(mSearchResultsAdapter);
         mSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
