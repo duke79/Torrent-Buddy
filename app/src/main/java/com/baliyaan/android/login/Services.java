@@ -58,7 +58,7 @@ public class Services {
 
     @Subscribe
     public void OnFBDataReturned(Event.Facebook.DataReturned event){
-        firebase().UpdateFirebaseServer();
+        if(firebase()!=null)firebase().UpdateFirebaseServer();
         broadcastUserData();
     }
 
