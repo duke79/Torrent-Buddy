@@ -3,6 +3,7 @@ package com.baliyaan.android.imdbtor;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.ListViewCompat;
 import android.view.View;
 
@@ -20,13 +21,15 @@ public class VideoListPresenter {
     private final Context mContext;
     private final String TAG = "VideoListPresenter";
     private final Services mLoginServices;
+    private final SwipeRefreshLayout mSwipeRefreshVieoList;
     ListViewCompat mVideoList = null;
     VideoListAdapter mVideoListAdapter = null;
     ArrayList<String> mVideos = new ArrayList<>();
 
-    public VideoListPresenter(Context context, View view, Services loginServices) {
+    public VideoListPresenter(Context context, View view, Services loginServices, SwipeRefreshLayout swipeRefreshVieoList) {
         mContext = context;
         mLoginServices = loginServices;
+        mSwipeRefreshVieoList = swipeRefreshVieoList;
         setupVideoList(view);
         MainActivity.bus.register(this);
     }
@@ -58,8 +61,23 @@ public class VideoListPresenter {
             @Override
             public void run() {
                 mVideoListAdapter.notifyDataSetChanged();
+                if(mSwipeRefreshVieoList!=null)
+                    mSwipeRefreshVieoList.setRefreshing(false);
             }
         };
         handler.post(myRunnable);
+    }
+
+    public void refreshVideoList(){
+        mVideos.clear();
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mVideoListAdapter.notifyDataSetChanged();
+            }
+        };
+        handler.post(myRunnable);
+        mLoginServices.requestUpdateUserData();
     }
 }

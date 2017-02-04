@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.util.Log;
@@ -34,6 +35,7 @@ public class MainActivity
     private Services mLoginServices = null;
     private View mHomePage = null;
     private View mSearchTorrentsPage;
+    private SwipeRefreshLayout mSwipeRefreshVieoList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +60,8 @@ public class MainActivity
                 .setAction(new Action() {
                     @Override
                     public void run(Object data) {
-                        setupVideoListView();
                         setupLogin();
+                        setupVideoListView();
                         setupTopBar();
                         setupSearchResultsView();
                         mHomePage = findViewById(R.id.HomePage);
@@ -177,7 +179,19 @@ public class MainActivity
 
     private void setupVideoListView() {
         mVideosView = findViewById(R.id.Videos);
-        new VideoListPresenter(this, mVideosView, mLoginServices);
+        mSwipeRefreshVieoList = (SwipeRefreshLayout) findViewById(R.id.SwipeRefreshVideoList);
+        final VideoListPresenter presenter = new VideoListPresenter(this, mVideosView, mLoginServices,mSwipeRefreshVieoList);
+        mSwipeRefreshVieoList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                presenter.refreshVideoList();
+            }
+        });
+        mSwipeRefreshVieoList.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
     }
 
     private void setupTopBar() {

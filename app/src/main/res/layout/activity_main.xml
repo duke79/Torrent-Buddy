@@ -11,36 +11,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/TopBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <ImageView android:id="@+id/menu_search"
-                android:src="@android:drawable/ic_menu_search"
+
+            <ImageView
+                android:id="@+id/menu_search"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_width="wrap_content"/>
+                android:src="@android:drawable/ic_menu_search" />
         </LinearLayout>
+
         <com.facebook.login.widget.LoginButton
             android:id="@+id/fb_login_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
             android:layout_marginBottom="30dp"
-            />
-        <com.baliyaan.android.uicomponents.CustomListView
-            android:id="@+id/Videos"
+            android:layout_marginTop="30dp" />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/SwipeRefreshVideoList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/darker_gray"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="@dimen/row_spacing" />
+            android:layout_height="match_parent">
+            <com.baliyaan.android.uicomponents.CustomListView
+                android:id="@+id/Videos"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/darker_gray"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="@dimen/row_spacing" />
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/SearchTorrentsPage"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
         <RelativeLayout
             android:id="@+id/search_view_container"
             android:layout_width="match_parent"
@@ -51,9 +62,9 @@
                 android:id="@+id/back_icon"
                 android:layout_width="@dimen/back_btn_width"
                 android:layout_height="@dimen/back_btn_height"
-                android:layout_marginTop="@dimen/back_btn_margin_top"
                 android:layout_marginLeft="@dimen/back_btn_margin_left"
                 android:layout_marginRight="@dimen/back_btn_margin_right"
+                android:layout_marginTop="@dimen/back_btn_margin_top"
                 android:src="@drawable/back_icon" />
 
             <android.support.v7.widget.SearchView
