@@ -24,26 +24,30 @@
                 android:src="@android:drawable/ic_menu_search" />
         </LinearLayout>
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/fb_login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="30dp"
-            android:layout_marginTop="30dp" />
-
-        <android.support.v4.widget.SwipeRefreshLayout
-            android:id="@+id/SwipeRefreshVideoList"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.baliyaan.android.uicomponents.CustomListView
-                android:id="@+id/Videos"
+            android:layout_height="wrap_content">
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/fb_login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="30dp" />
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/SwipeRefreshVideoList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/darker_gray"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="@dimen/row_spacing" />
-        </android.support.v4.widget.SwipeRefreshLayout>
+                android:layout_height="match_parent">
+                <com.baliyaan.android.uicomponents.CustomListView
+                    android:id="@+id/Videos"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/darker_gray"
+                    android:divider="@android:color/transparent"
+                    android:dividerHeight="@dimen/row_spacing" />
+            </android.support.v4.widget.SwipeRefreshLayout>
+        </android.support.v4.view.ViewPager>
     </LinearLayout>
 
     <RelativeLayout

@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -16,11 +18,14 @@ import com.baliyaan.android.afsm.Condition;
 import com.baliyaan.android.afsm.FSM;
 import com.baliyaan.android.afsm.Transition;
 import com.baliyaan.android.login.Services;
+import com.baliyaan.android.uicomponents.CustomPagerAdapter;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
+
+import java.util.ArrayList;
 
 public class MainActivity
         extends AppCompatActivity{
@@ -36,6 +41,7 @@ public class MainActivity
     private View mHomePage = null;
     private View mSearchTorrentsPage;
     private SwipeRefreshLayout mSwipeRefreshVieoList;
+    private ViewPager mPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,7 @@ public class MainActivity
                     public void run(Object data) {
                         setupLogin();
                         setupVideoListView();
+                        setupTabs();
                         setupTopBar();
                         setupSearchResultsView();
                         mHomePage = findViewById(R.id.HomePage);
@@ -152,6 +159,20 @@ public class MainActivity
                 .setCondition(backPressed);
 
         FSM.transit(null);
+    }
+
+    private void setupTabs() {
+        mPager = (ViewPager)findViewById(R.id.pager);
+
+        ArrayList<View> layoutList = new ArrayList<>();
+        layoutList.add(mSwipeRefreshVieoList);
+        layoutList.add(mFBLoginView);
+        ArrayList<String> pageTitles = new ArrayList<>();
+        pageTitles.add("Video List");
+        pageTitles.add("Account");
+        PagerAdapter adapter = new CustomPagerAdapter(mContext,layoutList,pageTitles);
+
+        mPager.setAdapter(adapter);
     }
 
     private void setupSearchResultsView() {
