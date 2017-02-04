@@ -59,10 +59,22 @@ public class Services {
     @Subscribe
     public void OnFBDataReturned(Event.Facebook.DataReturned event){
         firebase().UpdateFirebaseServer();
+        broadcastUserData();
+    }
+
+    private void broadcastUserData() {
         if(mUser.GetFBWantsToWatchList().size()>0) {
             Event.User.VideoListUpdated videoListEvent = new Event.User.VideoListUpdated();
             videoListEvent.videos = mUser.GetFBWantsToWatchList();
             mBus.post(videoListEvent);
         }
+    }
+
+    public void requestBroadcastUserData(){
+        broadcastUserData();
+    }
+
+    public void requestUpdateUserData(){
+        fb().requestUpdateUserData();
     }
 }

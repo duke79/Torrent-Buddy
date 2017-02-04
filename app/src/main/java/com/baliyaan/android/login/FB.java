@@ -60,6 +60,10 @@ public class FB {
         FacebookSdk.sdkInitialize(context);
         InitializeFBLoginButton(fbLoginButton);
         IsFBLoggedIn(packageStr);
+        requestUpdateUserData();
+    }
+
+    public void requestUpdateUserData() {
         RequestFBBasicUserInfo();
         RequestFBWantsToWatchList();
         RequestFBFriendsWhoUseThisApp();

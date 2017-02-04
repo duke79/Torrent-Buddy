@@ -7,6 +7,7 @@ import android.support.v7.widget.ListViewCompat;
 import android.view.View;
 
 import com.baliyaan.android.login.Event;
+import com.baliyaan.android.login.Services;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -18,12 +19,14 @@ import java.util.ArrayList;
 public class VideoListPresenter {
     private final Context mContext;
     private final String TAG = "VideoListPresenter";
+    private final Services mLoginServices;
     ListViewCompat mVideoList = null;
     VideoListAdapter mVideoListAdapter = null;
     ArrayList<String> mVideos = new ArrayList<>();
 
-    public VideoListPresenter(Context context, View view) {
+    public VideoListPresenter(Context context, View view, Services loginServices) {
         mContext = context;
+        mLoginServices = loginServices;
         setupVideoList(view);
         MainActivity.bus.register(this);
     }

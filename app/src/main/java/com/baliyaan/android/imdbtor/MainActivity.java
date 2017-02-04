@@ -177,7 +177,7 @@ public class MainActivity
 
     private void setupVideoListView() {
         mVideosView = findViewById(R.id.Videos);
-        new VideoListPresenter(this, mVideosView);
+        new VideoListPresenter(this, mVideosView, mLoginServices);
     }
 
     private void setupTopBar() {
