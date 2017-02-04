@@ -23,9 +23,9 @@ import java.util.ArrayList;
  * Created by Pulkit Singh on 1/1/2017.
  */
 
-public class ResultListAdapter extends ListAdapter{
+public class TorrentResultsAdapter extends ListAdapter{
 
-    public ResultListAdapter(Context context, ArrayList<Object> itemsList, int itemLayoutID) {
+    public TorrentResultsAdapter(Context context, ArrayList<Object> itemsList, int itemLayoutID) {
         super(context, itemsList, itemLayoutID);
     }
 

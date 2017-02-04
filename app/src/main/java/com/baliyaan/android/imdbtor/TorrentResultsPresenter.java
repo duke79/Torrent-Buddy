@@ -22,19 +22,19 @@ import java.util.ArrayList;
  * Created by Pulkit Singh on 1/29/2017.
  */
 
-public class SearchResultsPresenter {
+public class TorrentResultsPresenter {
     private final Context mContext;
-    private final String TAG = "SearchResultsPresenter";
+    private final String TAG = "TorrentResultsPresenter";
     private View mSearchResultsPage;
     private Bus mBus;
     private ListViewCompat mSearchResults;
     private ArrayList<Torrent> mTorrents = new ArrayList<>();
-    private ResultListAdapter mSearchResultsAdapter;
+    private TorrentResultsAdapter mSearchResultsAdapter;
     private SearchView mSearchView;
     private String mQuery;
     private Handler mHandler;
 
-    public SearchResultsPresenter(Context context, View searchResultsPage, Bus bus) {
+    public TorrentResultsPresenter(Context context, View searchResultsPage, Bus bus) {
         mContext = context;
         mSearchResultsPage = searchResultsPage;
         mBus = bus;
@@ -125,7 +125,7 @@ public class SearchResultsPresenter {
 
     public void setupResultsList() {
         mSearchResults = (ListViewCompat) ((Activity)mContext).findViewById(R.id.Results);
-        mSearchResultsAdapter = new ResultListAdapter(mContext, (ArrayList<Object>)(ArrayList) mTorrents,R.layout.torrent_result);
+        mSearchResultsAdapter = new TorrentResultsAdapter(mContext, (ArrayList<Object>)(ArrayList) mTorrents,R.layout.torrent_result);
         mSearchResults.setAdapter(mSearchResultsAdapter);
         mSearchResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

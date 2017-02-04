@@ -154,7 +154,7 @@ public class MainActivity
 
     private void setupSearchResultsView() {
         mSearchTorrentsPage = findViewById(R.id.SearchTorrentsPage);
-        new SearchResultsPresenter(this, mVideosView,bus);
+        new TorrentResultsPresenter(this, mVideosView,bus);
     }
 
 
