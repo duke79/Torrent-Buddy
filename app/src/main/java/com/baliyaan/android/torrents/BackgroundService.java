@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.baliyaan.android.imdbtor.R;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 
@@ -30,15 +31,14 @@ public class BackgroundService extends IntentService {
             final String action = intent.getAction();
             if (ACTION_FIND_TORRENT.equals(action)) {
                 // Start service in foreground
-                startForeground(1,
-                        buildForegroundNotification());
+                //startForeground(1,buildForegroundNotification());
 
                 // Try to find torrents
                 final ArrayList<String> nameList = intent.getStringArrayListExtra(NameList);
                 findTorrents(nameList);
 
                 // Stop service
-                stopForeground(true);
+                //stopForeground(true);
             }
         }
     }
@@ -46,6 +46,14 @@ public class BackgroundService extends IntentService {
     // Intent handler
     private void findTorrents(ArrayList<String> nameList) {
         Log.d(TAG,"Searching for torrents...");
+
+        ArrayList<Torrent> torrentsAll = new ArrayList<>();
+        for(int i=0;i<nameList.size();i++)
+        {
+            InputStream inputStream = this.getResources().openRawResource(R.raw.meta);
+            ArrayList<Torrent> torrents = Services.GetTorrents(nameList.get(i),inputStream);
+            torrentsAll.addAll(torrents);
+        }
     }
 
     // Build foreground notification
@@ -54,7 +62,7 @@ public class BackgroundService extends IntentService {
 
         b.setOngoing(true);
 
-        b.setContentTitle(getString(R.string.app_name))
+        b.setContentTitle("IMBDTor")
                 .setContentText("Fetching torrents")
                 .setSmallIcon(android.R.drawable.stat_sys_download)
                 .setTicker("");
