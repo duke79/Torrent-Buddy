@@ -78,6 +78,7 @@ public class Provider {
                 Torrent torrent = new Torrent();
                 torrent.magnetLink = magnetsList.get(i).attr("href");
                 torrent.title = titlesList.get(i).text();
+                torrent.quality = VideoQuality.parseQuality(torrent.title);
                 //torrent.timeAdded = timestampsList.get(i).text();
                 //torrent.size = sizesList.get(i).text();
                 torrent.seeds = seedsList.get(i).text();

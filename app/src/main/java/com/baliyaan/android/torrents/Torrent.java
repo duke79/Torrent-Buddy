@@ -25,5 +25,6 @@ public class Torrent {
     public double size;
     public int NbrOfFiles;
     public Timestamp timeAdded;
+    public VideoQuality quality;
 
 }
