@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">IMDBTor</string>
+    <string name="app_name">Torrent Search Assistant</string>
     <string name="TorrentAppNotFound">No torrent application found!</string>
     <string name="BrowserAppNotFound">No browser app found!</string>
 
