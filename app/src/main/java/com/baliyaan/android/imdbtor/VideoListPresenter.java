@@ -30,8 +30,25 @@ public class VideoListPresenter {
         mContext = context;
         mLoginServices = loginServices;
         mSwipeRefreshVieoList = swipeRefreshVieoList;
+        setupSwipeRefresh(this);
         setupVideoList(view);
         MainActivity.bus.register(this);
+    }
+
+    private void setupSwipeRefresh(final VideoListPresenter presenter) {
+        if(mSwipeRefreshVieoList!=null)
+        {
+            mSwipeRefreshVieoList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    presenter.refreshVideoList();
+                }
+            });
+            mSwipeRefreshVieoList.setColorSchemeResources(android.R.color.holo_blue_bright,
+                    android.R.color.holo_green_light,
+                    android.R.color.holo_orange_light,
+                    android.R.color.holo_red_light);
+        }
     }
 
     public void setupVideoList(View view) {

@@ -4,7 +4,8 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.baliyaan.android.imdbtor.MainActivity">
+    tools:context="com.baliyaan.android.imdbtor.MainActivity"
+    android:background="@color/cardview_light_background">
 
     <LinearLayout
         android:id="@+id/HomePage"
@@ -43,8 +44,7 @@
                     android:id="@+id/Videos"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@android:color/darker_gray"
-                    android:divider="@android:color/transparent"
+                    android:divider="@android:color/darker_gray"
                     android:dividerHeight="@dimen/row_spacing" />
             </android.support.v4.widget.SwipeRefreshLayout>
         </android.support.v4.view.ViewPager>

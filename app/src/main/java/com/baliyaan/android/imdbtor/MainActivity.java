@@ -40,7 +40,7 @@ public class MainActivity
     private Services mLoginServices = null;
     private View mHomePage = null;
     private View mSearchTorrentsPage;
-    private SwipeRefreshLayout mSwipeRefreshVieoList;
+    private SwipeRefreshLayout mSwipeRefreshVideoList;
     private ViewPager mPager;
 
     @Override
@@ -165,7 +165,7 @@ public class MainActivity
         mPager = (ViewPager)findViewById(R.id.pager);
 
         ArrayList<View> layoutList = new ArrayList<>();
-        layoutList.add(mSwipeRefreshVieoList);
+        layoutList.add(mSwipeRefreshVideoList);
         layoutList.add(mFBLoginView);
         ArrayList<String> pageTitles = new ArrayList<>();
         pageTitles.add("Video List");
@@ -200,19 +200,8 @@ public class MainActivity
 
     private void setupVideoListView() {
         mVideosView = findViewById(R.id.Videos);
-        mSwipeRefreshVieoList = (SwipeRefreshLayout) findViewById(R.id.SwipeRefreshVideoList);
-        final VideoListPresenter presenter = new VideoListPresenter(this, mVideosView, mLoginServices,mSwipeRefreshVieoList);
-        mSwipeRefreshVieoList.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                presenter.refreshVideoList();
-            }
-        });
-        mSwipeRefreshVieoList.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
-
+        mSwipeRefreshVideoList = (SwipeRefreshLayout) findViewById(R.id.SwipeRefreshVideoList);
+        new VideoListPresenter(this, mVideosView, mLoginServices, mSwipeRefreshVideoList);
     }
 
     private void setupTopBar() {
