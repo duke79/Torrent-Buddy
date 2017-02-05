@@ -3,7 +3,6 @@
     <string name="TorrentAppNotFound">No torrent application found!</string>
     <string name="BrowserAppNotFound">No browser app found!</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="auth_failed">Registration failed !</string>
     <string name="facebook_application_id" translatable="false">1831184750458491</string>

@@ -118,8 +118,6 @@ public class Firebase {
         FirebaseAuth.getInstance().signOut();
     }
 
-    //TODO: Invite friends
-
     public  void integrateWithFB(AccessToken token) {
         Log.d(TAG, "IntegrateFirebaseFBwithFBtoken:" + token);
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());

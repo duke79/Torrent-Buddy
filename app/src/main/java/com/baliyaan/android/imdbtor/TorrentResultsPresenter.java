@@ -117,7 +117,6 @@ public class TorrentResultsPresenter {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                // TODO Auto-generated method stub
                 return false;
             }
         });
@@ -151,6 +150,8 @@ public class TorrentResultsPresenter {
                         {
                             mSearchView.requestFocusFromTouch();
                         }
+                        else
+                            mSearchView.clearFocus();
                         mSearchResultsAdapter.notifyDataSetChanged();
                     }
                 };
@@ -171,5 +172,21 @@ public class TorrentResultsPresenter {
                 mHandler.post(myRunnable);
             }
         }).start();
+    }
+
+    public void reset() {
+        mQuery="";
+        mSearchView.setQuery(mQuery,true);
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if(mTorrents!=null) {
+                    mTorrents.clear();
+                    mSearchResultsAdapter.notifyDataSetChanged();
+                }
+            }
+        };
+        handler.post(myRunnable);
     }
 }

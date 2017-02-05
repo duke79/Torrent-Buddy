@@ -42,6 +42,7 @@ public class MainActivity
     private View mSearchTorrentsPage;
     private SwipeRefreshLayout mSwipeRefreshVideoList;
     private ViewPager mPager;
+    private TorrentResultsPresenter mTorrentPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +143,7 @@ public class MainActivity
                                 //mVideosView.setVisibility(View.VISIBLE);
                                 mHomePage.setVisibility(View.VISIBLE);
                                 mSearchTorrentsPage.setVisibility(View.GONE);
+                                mTorrentPresenter.reset();
                             }
                         };
                         handler.post(myRunnable);
@@ -184,7 +186,7 @@ public class MainActivity
 
     private void setupSearchResultsView() {
         mSearchTorrentsPage = findViewById(R.id.SearchTorrentsPage);
-        new TorrentResultsPresenter(this, mVideosView,bus);
+        mTorrentPresenter = new TorrentResultsPresenter(this, mVideosView,bus);
     }
 
 

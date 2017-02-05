@@ -77,7 +77,7 @@ public class VideoListPresenter {
         Intent searchTorrentsIntent = new Intent(mContext,BackgroundService.class);
         searchTorrentsIntent.setAction(BackgroundService.ACTION_FIND_TORRENT);
         searchTorrentsIntent.putExtra(BackgroundService.NameList,videos);
-        mContext.startService(searchTorrentsIntent);
+        //TODO:mContext.startService(searchTorrentsIntent);
 
         Handler handler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
