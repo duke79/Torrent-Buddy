@@ -170,9 +170,16 @@ public class MainActivity
         ArrayList<String> pageTitles = new ArrayList<>();
         pageTitles.add("Video List");
         pageTitles.add("Account");
-        PagerAdapter adapter = new CustomPagerAdapter(mContext,layoutList,pageTitles);
+        final PagerAdapter adapter = new CustomPagerAdapter(mContext,layoutList,pageTitles);
 
-        mPager.setAdapter(adapter);
+        Handler handler = new Handler(Looper.getMainLooper());
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                mPager.setAdapter(adapter);
+            }
+        };
+        handler.post(myRunnable);
     }
 
     private void setupSearchResultsView() {
