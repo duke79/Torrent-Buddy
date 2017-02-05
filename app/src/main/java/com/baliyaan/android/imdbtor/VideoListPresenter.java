@@ -1,6 +1,7 @@
 package com.baliyaan.android.imdbtor;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -9,6 +10,7 @@ import android.view.View;
 
 import com.baliyaan.android.login.Event;
 import com.baliyaan.android.login.Services;
+import com.baliyaan.android.torrents.BackgroundService;
 import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
@@ -72,6 +74,10 @@ public class VideoListPresenter {
         if (mVideos.containsAll(videos)) return;
         mVideos.clear();
         mVideos.addAll(videos);
+        Intent searchTorrentsIntent = new Intent(mContext,BackgroundService.class);
+        searchTorrentsIntent.setAction(BackgroundService.ACTION_FIND_TORRENT);
+        searchTorrentsIntent.putExtra(BackgroundService.NameList,videos);
+        mContext.startService(searchTorrentsIntent);
 
         Handler handler = new Handler(Looper.getMainLooper());
         Runnable myRunnable = new Runnable() {
