@@ -133,6 +133,7 @@ public class TorrentResultsPresenter {
                 Toast.makeText(mContext, torrent.title, Toast.LENGTH_LONG).show();
             }
         });
+        mSearchResults.setVisibility(View.GONE);
     }
 
     private void MakeSearch(final String query) {
@@ -167,6 +168,7 @@ public class TorrentResultsPresenter {
                     public void run() {
                         mTorrents.addAll(torrents);
                         mSearchResultsAdapter.notifyDataSetChanged();
+                        mSearchResults.setVisibility(View.VISIBLE);
                     }
                 };
                 mHandler.post(myRunnable);
@@ -183,7 +185,7 @@ public class TorrentResultsPresenter {
             public void run() {
                 if(mTorrents!=null) {
                     mTorrents.clear();
-                    mSearchResultsAdapter.notifyDataSetChanged();
+                    mSearchResults.setVisibility(View.GONE);
                 }
             }
         };
