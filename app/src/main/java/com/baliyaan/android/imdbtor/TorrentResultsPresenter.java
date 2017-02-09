@@ -25,6 +25,7 @@ import java.util.ArrayList;
 public class TorrentResultsPresenter {
     private final Context mContext;
     private final String TAG = "TorrentResultsPresenter";
+    private final View mSearchProgressBar;
     private View mSearchResultsPage;
     private Bus mBus;
     private ListViewCompat mSearchResults;
@@ -34,9 +35,10 @@ public class TorrentResultsPresenter {
     private String mQuery;
     private Handler mHandler;
 
-    public TorrentResultsPresenter(Context context, View searchResultsPage, Bus bus) {
+    public TorrentResultsPresenter(Context context, View searchResultsPage, View mSearchProgressBar, Bus bus) {
         mContext = context;
         mSearchResultsPage = searchResultsPage;
+        this.mSearchProgressBar = mSearchProgressBar;
         mBus = bus;
         mBus.register(this);
 
@@ -154,6 +156,8 @@ public class TorrentResultsPresenter {
                         else
                             mSearchView.clearFocus();
                         mSearchResultsAdapter.notifyDataSetChanged();
+                        mSearchResults.setVisibility(View.GONE);
+                        mSearchProgressBar.setVisibility(View.VISIBLE);
                     }
                 };
                 mHandler.post(myRunnable);
@@ -169,6 +173,7 @@ public class TorrentResultsPresenter {
                         mTorrents.addAll(torrents);
                         mSearchResultsAdapter.notifyDataSetChanged();
                         mSearchResults.setVisibility(View.VISIBLE);
+                        mSearchProgressBar.setVisibility(View.GONE);
                     }
                 };
                 mHandler.post(myRunnable);

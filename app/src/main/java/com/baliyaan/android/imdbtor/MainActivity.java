@@ -43,6 +43,7 @@ public class MainActivity
     private SwipeRefreshLayout mSwipeRefreshVideoList;
     private ViewPager mPager;
     private TorrentResultsPresenter mTorrentPresenter;
+    private View mSearchProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,7 +187,8 @@ public class MainActivity
 
     private void setupSearchResultsView() {
         mSearchTorrentsPage = findViewById(R.id.SearchTorrentsPage);
-        mTorrentPresenter = new TorrentResultsPresenter(this, mVideosView,bus);
+        mSearchProgressBar = findViewById(R.id.SearchProgressBar);
+        mTorrentPresenter = new TorrentResultsPresenter(this, mVideosView,mSearchProgressBar,bus);
     }
 
 
