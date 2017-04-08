@@ -52,7 +52,7 @@ public class TorrentResultsAdapter extends ListAdapter{
             @Override
             public void onClick(View v) {
                 int id = v.getId();
-                Toast.makeText(context(),((Torrent)itemsList().get(id)).url,Toast.LENGTH_LONG).show();
+                //Toast.makeText(context(),((Torrent)itemsList().get(id)).url,Toast.LENGTH_LONG).show();
             }
         });
         viewHolder.seeds = (TextView) view.findViewById(R.id.torrent_seeds);
@@ -63,7 +63,7 @@ public class TorrentResultsAdapter extends ListAdapter{
             public void onClick(View v) {
                 int id = v.getId();
                 if(BuildConfig.DEBUG) {
-                    Toast.makeText(context(),((Torrent)itemsList().get(id)).magnetLink,Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context(),((Torrent)itemsList().get(id)).magnetLink,Toast.LENGTH_LONG).show();
                 }
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(((Torrent)itemsList().get(id)).magnetLink));
@@ -72,7 +72,7 @@ public class TorrentResultsAdapter extends ListAdapter{
                 }
                 catch (ActivityNotFoundException e)
                 {
-                    Toast.makeText(context(), R.string.TorrentAppNotFound,Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context(), R.string.TorrentAppNotFound,Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -82,7 +82,7 @@ public class TorrentResultsAdapter extends ListAdapter{
             public void onClick(View v) {
                 int id = v.getId();
                 if(BuildConfig.DEBUG) {
-                    Toast.makeText(context(), ((Torrent)itemsList().get(id)).url, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(context(), ((Torrent)itemsList().get(id)).url, Toast.LENGTH_LONG).show();
                 }
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setData(Uri.parse(((Torrent)itemsList().get(id)).url));

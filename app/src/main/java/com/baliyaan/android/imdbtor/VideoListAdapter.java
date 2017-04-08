@@ -41,7 +41,7 @@ public class VideoListAdapter extends ListAdapter{
             public void onClick(View v) {
                 int id = v.getId();
                 String videoTitle = (String) itemsList().get(id);
-                Toast.makeText(context(),videoTitle,Toast.LENGTH_LONG).show();
+                //Toast.makeText(context(),videoTitle,Toast.LENGTH_LONG).show();
                 // Start search
                 Event.SearchTorrent searchTorrentEvent = new Event.SearchTorrent();
                 searchTorrentEvent.query = videoTitle;

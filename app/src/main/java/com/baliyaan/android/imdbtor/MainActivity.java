@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -18,14 +17,11 @@ import com.baliyaan.android.afsm.Condition;
 import com.baliyaan.android.afsm.FSM;
 import com.baliyaan.android.afsm.Transition;
 import com.baliyaan.android.login.Services;
-import com.baliyaan.android.uicomponents.CustomPagerAdapter;
 import com.facebook.login.widget.LoginButton;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.otto.ThreadEnforcer;
-
-import java.util.ArrayList;
 
 public class MainActivity
         extends AppCompatActivity{
@@ -68,9 +64,9 @@ public class MainActivity
                 .setAction(new Action() {
                     @Override
                     public void run(Object data) {
-                        setupLogin();
-                        setupVideoListView();
-                        setupTabs();
+                        //setupLogin();
+                        //setupVideoListView();
+                        //setupTabs();
                         setupTopBar();
                         setupSearchResultsView();
                         mHomePage = findViewById(R.id.HomePage);
@@ -165,6 +161,7 @@ public class MainActivity
     }
 
     private void setupTabs() {
+        /*
         mPager = (ViewPager)findViewById(R.id.pager);
 
         ArrayList<View> layoutList = new ArrayList<>();
@@ -183,12 +180,13 @@ public class MainActivity
             }
         };
         handler.post(myRunnable);
+        */
     }
 
     private void setupSearchResultsView() {
         mSearchTorrentsPage = findViewById(R.id.SearchTorrentsPage);
         mSearchProgressBar = findViewById(R.id.SearchProgressBar);
-        mTorrentPresenter = new TorrentResultsPresenter(this, mVideosView,mSearchProgressBar,bus);
+        mTorrentPresenter = new TorrentResultsPresenter(this, mSearchTorrentsPage,mSearchProgressBar,bus);
     }
 
 
@@ -204,15 +202,19 @@ public class MainActivity
     }
 
     private void setupLogin() {
+        /*
         mFBLoginView = (LoginButton) findViewById(R.id.fb_login_button);
         String packageStr = "com.baliyaan.android.imdbtor";
         mLoginServices = Services.getInstance(mContext,mFBLoginView,bus,packageStr);
+        */
     }
 
     private void setupVideoListView() {
+        /*
         mVideosView = findViewById(R.id.Videos);
         mSwipeRefreshVideoList = (SwipeRefreshLayout) findViewById(R.id.SwipeRefreshVideoList);
         new VideoListPresenter(this, mVideosView, mLoginServices, mSwipeRefreshVideoList);
+        */
     }
 
     private void setupTopBar() {

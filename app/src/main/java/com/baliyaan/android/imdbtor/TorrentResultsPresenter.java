@@ -9,7 +9,6 @@ import android.support.v7.widget.SearchView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
-import android.widget.Toast;
 
 import com.baliyaan.android.torrents.Services;
 import com.baliyaan.android.torrents.Torrent;
@@ -70,14 +69,14 @@ public class TorrentResultsPresenter {
         mSearchResultsPage.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                Toast.makeText(mContext,"Layout changed",Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext,"Layout changed",Toast.LENGTH_SHORT).show();
                 int newVis = mSearchResultsPage.getVisibility();
                 if((int)mSearchResultsPage.getTag() != newVis)
                 {
-                    Toast.makeText(mContext,"SearchResults Visibility changed",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(mContext,"SearchResults Visibility changed",Toast.LENGTH_SHORT).show();
                     if(mSearchResultsPage.getVisibility()==View.GONE)
                     {
-                        Toast.makeText(mContext,"SearchResults GONE",Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(mContext,"SearchResults GONE",Toast.LENGTH_SHORT).show();
                         mSearchResultsPage.setTag(mSearchResultsPage.getVisibility());
                         if(mQuery!=null)
                         {
@@ -132,7 +131,7 @@ public class TorrentResultsPresenter {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Torrent torrent = (Torrent) mSearchResultsAdapter.getItem(position);
-                Toast.makeText(mContext, torrent.title, Toast.LENGTH_LONG).show();
+                //Toast.makeText(mContext, torrent.title, Toast.LENGTH_LONG).show();
             }
         });
         mSearchResults.setVisibility(View.GONE);
@@ -143,12 +142,12 @@ public class TorrentResultsPresenter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                mTorrents.clear();
                 if(mHandler==null)
                     mHandler = new Handler(Looper.getMainLooper());
                 Runnable myRunnable = new Runnable() {
                     @Override
                     public void run() {
+                        mTorrents.clear();
                         if(mQuery.length()==0)
                         {
                             mSearchView.requestFocusFromTouch();
@@ -171,9 +170,11 @@ public class TorrentResultsPresenter {
                     @Override
                     public void run() {
                         mTorrents.addAll(torrents);
-                        mSearchResultsAdapter.notifyDataSetChanged();
                         mSearchResults.setVisibility(View.VISIBLE);
                         mSearchProgressBar.setVisibility(View.GONE);
+                        mSearchResultsAdapter.notifyDataSetChanged();
+                        mSearchResults.invalidateViews();
+                        mSearchResults.refreshDrawableState();
                     }
                 };
                 mHandler.post(myRunnable);
